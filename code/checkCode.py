@@ -10,27 +10,40 @@ import requests
 
 
 class check:
-    def __init__(self, studentCode, good_id, mpn):
+    def __init__(self, studentCode):
         self.studentCode = studentCode
-        self.good_id = good_id
-        self.mpn = mpn
 
-    def getcheck(self):
+    def getMaccheck(self):
         url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
-        payload = {'company_id': '1',
-                   'xxw_check_code': self.studentCode,
-                   'distributor_id': '2638',
-                   'origin_bn': self.mpn,
-                   'item_num': '1',
-                   'goods_id': self.good_id}
+
+        payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028".format(
+            code=self.studentCode)
         headers = {
-            'authorizer-appid': 'wxd2678c430bfd3abc',
-            'user-agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/81.0.4044.138 Safari/537.36 MicroMessenger/7.0.4.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat/WMPF',
-            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJodHRwOi8vMTI3LjAuMC4xOjgwOTAvYXBpL2g1YXBwL3d4YXBwL2xvZ2luIiwiaWF0IjoxNjY1NDEyMzE0LCJleHAiOjE2NjU4NDQzMTQsIm5iZiI6MTY2NTQxMjMxNCwianRpIjoickw5bjU3OTdXSUlrU3JpMiIsInN1YiI6IjM5MDMxNDdfZXNwaWVyX29adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGtfZXNwaWVyX0Rpc3RpLTFjMGU3OGFjN2YwNGU4YWI0ZDE2NjUwNDgwNjIzNzQ3IiwicHJ2IjoiOTE1ZWYzYjE0NTc5N2Q5NjM2ZTY2Nzg2NjA4OWM2YmIxZmUzMmUxYyIsImlkIjoiMzkwMzE0N19lc3BpZXJfb1p0R041Q0RCRkNEanBPQUtqR3otZGJnOHdEa19lc3BpZXJfRGlzdGktMWMwZTc4YWM3ZjA0ZThhYjRkMTY2NTA0ODA2MjM3NDciLCJ1c2VyX2lkIjoiMzkwMzE0NyIsImRpc2FibGVkIjpmYWxzZSwiY29tcGFueV9pZCI6IjEiLCJ3eGFwcF9hcHBpZCI6Ind4ZDI2NzhjNDMwYmZkM2FiYyIsIndvYV9hcHBpZCI6bnVsbCwidW5pb25pZCI6IkRpc3RpLTFjMGU3OGFjN2YwNGU4YWI0ZDE2NjUwNDgwNjIzNzQ3Iiwib3BlbmlkIjoib1p0R041Q0RCRkNEanBPQUtqR3otZGJnOHdEayIsIm5pY2tuYW1lIjoiIiwibW9iaWxlIjoiNjQ5NDc3MzAwOTUiLCJ1c2VybmFtZSI6IiIsInNleCI6MCwidXNlcl9jYXJkX2NvZGUiOiI1MzVEQUE4MTQwQjIiLCJtZW1iZXJfY2FyZF9jb2RlIjoiNTM1REFBODE0MEIyIiwib2ZmbGluZV9jYXJkX2NvZGUiOiIiLCJvcGVyYXRvcl90eXBlIjoidXNlciJ9.5tr71AoJp50noc0tEOOEeHvCMeIyi11KJqejOI8gdyI',
             'Host': 'aar-orderapi.tjtjshengtu.com',
-            'Connection': 'keep-alive',
-            'Cookie': 'acw_tc=276077a416637677214626396e092c36258c50bbd68440ec4fc7161e0c7fc9'
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjM5MDMxNDdfZXNwaWVyX29adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGtfZXNwaWVyX29adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGsiLCJzdWIiOiIzOTAzMTQ3X2VzcGllcl9vWnRHTjVDREJGQ0RqcE9BS2pHei1kYmc4d0RrX2VzcGllcl9vWnRHTjVDREJGQ0RqcE9BS2pHei1kYmc4d0RrIiwidXNlcl9pZCI6MzkwMzE0NywiZGlzYWJsZWQiOjAsImNvbXBhbnlfaWQiOiIxIiwid3hhcHBfYXBwaWQiOiJ3eGQyNjc4YzQzMGJmZDNhYmMiLCJ3b2FfYXBwaWQiOiJ3eGQyNjc4YzQzMGJmZDNhYmMiLCJ1bmlvbmlkIjoib1p0R041Q0RCRkNEanBPQUtqR3otZGJnOHdEayIsIm9wZW5pZCI6Im9adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGsiLCJhdXRob3JpemVyX2FwcGlkIjoid3hkMjY3OGM0MzBiZmQzYWJjIiwib3BlcmF0b3JfdHlwZSI6InVzZXIifQ.47q4RWruuj3zYeuuearYDPvjRtpSox8r-Q7aqqkbUTI',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
+            'authorizer-appid': 'wxd2678c430bfd3abc',
+            'content-type': 'application/x-www-form-urlencoded',
+            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
         }
+
+        response = requests.request("POST", url, headers=headers, data=payload)
+        print(self.studentCode + "   结果：" + str(response.json()))
+
+    def getIpadcheck(self):
+        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+
+        payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MM9F3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=899&items%5B0%5D%5Bitem_name%5D=iPad%20Air%EF%BC%88%E7%AC%AC%E4%BA%94%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=899".format(
+            code=self.studentCode)
+        headers = {
+            'Host': 'aar-orderapi.tjtjshengtu.com',
+            'Authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjM5MDMxNDdfZXNwaWVyX29adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGtfZXNwaWVyX29adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGsiLCJzdWIiOiIzOTAzMTQ3X2VzcGllcl9vWnRHTjVDREJGQ0RqcE9BS2pHei1kYmc4d0RrX2VzcGllcl9vWnRHTjVDREJGQ0RqcE9BS2pHei1kYmc4d0RrIiwidXNlcl9pZCI6MzkwMzE0NywiZGlzYWJsZWQiOjAsImNvbXBhbnlfaWQiOiIxIiwid3hhcHBfYXBwaWQiOiJ3eGQyNjc4YzQzMGJmZDNhYmMiLCJ3b2FfYXBwaWQiOiJ3eGQyNjc4YzQzMGJmZDNhYmMiLCJ1bmlvbmlkIjoib1p0R041Q0RCRkNEanBPQUtqR3otZGJnOHdEayIsIm9wZW5pZCI6Im9adEdONUNEQkZDRGpwT0FLakd6LWRiZzh3RGsiLCJhdXRob3JpemVyX2FwcGlkIjoid3hkMjY3OGM0MzBiZmQzYWJjIiwib3BlcmF0b3JfdHlwZSI6InVzZXIifQ.47q4RWruuj3zYeuuearYDPvjRtpSox8r-Q7aqqkbUTI',
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
+            'authorizer-appid': 'wxd2678c430bfd3abc',
+            'content-type': 'application/x-www-form-urlencoded',
+            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
+        }
+
         response = requests.request("POST", url, headers=headers, data=payload)
         print(self.studentCode + "   结果：" + str(response.json()))
 
@@ -39,5 +52,4 @@ if __name__ == '__main__':
     f = open("./code", "r")
     for l in f.readlines():
         code = l.replace("\n", "")
-        # check(code, "756", "MHQR3CH/A").getcheck()
-        check(code, "1028", "MLY33CH/A").getcheck()
+        check(code).getIpadcheck()
