@@ -1,6 +1,7 @@
 # coding:utf-8
 
 import requests
+import simplejson as json
 
 """
 100023038702 ipadPro12.9英寸 7399
@@ -65,7 +66,11 @@ def getJdSkuId():
 
     response = requests.request("GET", url, headers=headers, data=payload)
 
-    print(response.text)
+    jsonres = json.loads(response.text.replace("/**/jsonp_22696c2b2629da0(", "").replace(");", ""))
+    for skuSecondType in jsonres['data']:
+        for sku in skuSecondType['skuList']:
+            print(sku['skuName'])
+            print(sku['skuId'])
 
 
 if __name__ == '__main__':
