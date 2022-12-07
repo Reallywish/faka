@@ -46,6 +46,8 @@ class check:
 
         response = requests.request("POST", url, headers=headers, data=payload)
         print(self.studentCode + "   结果：" + str(response.json()))
+        # if "true" in str(response.text):
+        #     print(self.studentCode)
 
 
 if __name__ == '__main__':
