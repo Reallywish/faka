@@ -51,8 +51,11 @@ class check:
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
-        if status != 0:
+        if status == 1:
             if "true" in str(response.text):
+                print(self.studentCode)
+        elif status == 2:
+            if "true" not in str(response.text):
                 print(self.studentCode)
         else:
             print(self.studentCode + "   结果：" + str(response.json()))
@@ -61,7 +64,7 @@ class check:
 if __name__ == '__main__':
 
     try:
-        tmp = raw_input("检测ipad请输入1，检测mac请输入2，输入3将可用码直接输出。如果ipad和mac都检测请随便输入===> ")
+        tmp = raw_input("检测ipad请输入1，检测mac请输入2，输入3将可用码直接输出，输入4将不可用码输出。如果ipad和mac都检测请随便输入===> ")
 
         f = open("./code", "r")
         for l in f.readlines():
@@ -72,6 +75,8 @@ if __name__ == '__main__':
                 check(code).getMaccheck()
             elif tmp == "3":
                 check(code).getIpadcheck(1)
+            elif tmp == "4":
+                check(code).getIpadcheck(2)
             else:
                 check(code).getIpadcheck()
                 print("++++++++++++++++++++++++++++ipad检测完毕，开始检测mac+++++++++++++++++++++++++++++++")
