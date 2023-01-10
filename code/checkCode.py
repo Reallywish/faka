@@ -1,4 +1,7 @@
+# coding:utf-8
+
 import requests
+from tqdm import tqdm
 from past.builtins import raw_input
 
 """
@@ -8,6 +11,9 @@ from past.builtins import raw_input
 电脑msn：MLY33CH/A
 电脑good_ids:1028
 """
+
+codeok = []
+codeerr = []
 
 
 class check:
@@ -30,9 +36,12 @@ class check:
         }
 
         response = requests.request("POST", url, headers=headers, data=payload)
-        if status != 0:
+        if status == 1:
             if "true" in str(response.text):
-                print(self.studentCode)
+                # print(self.studentCode)
+                codeok.append(self.studentCode + "\r")
+            else:
+                codeerr.append(self.studentCode + "\r")
         else:
             print(self.studentCode + "   结果：" + str(response.json()))
 
@@ -53,7 +62,10 @@ class check:
         response = requests.request("POST", url, headers=headers, data=payload)
         if status == 1:
             if "true" in str(response.text):
-                print(self.studentCode)
+                # print(self.studentCode)
+                codeok.append(self.studentCode + "\r")
+            else:
+                codeerr.append(self.studentCode + "\r")
         elif status == 2:
             if "true" not in str(response.text):
                 print(self.studentCode)
@@ -64,23 +76,35 @@ class check:
 if __name__ == '__main__':
 
     try:
-        tmp = raw_input("检测ipad请输入1，检测mac请输入2，输入3将可用码直接输出，输入4将不可用码输出。如果ipad和mac都检测请随便输入===> ")
+        tmp = raw_input("检测ipad请输入1，检测mac请输入2，输入3将IPAD总结输出，输入4将MAC总结输出。如果ipad和mac都检测请输入5:===> ")
 
         f = open("./code", "r")
-        for l in f.readlines():
-            code = l.replace("\n", "")
-            if tmp == "1":
-                check(code).getIpadcheck()
-            elif tmp == "2":
-                check(code).getMaccheck()
-            elif tmp == "3":
-                check(code).getIpadcheck(1)
-            elif tmp == "4":
-                check(code).getIpadcheck(2)
-            else:
-                check(code).getIpadcheck()
-                print("++++++++++++++++++++++++++++ipad检测完毕，开始检测mac+++++++++++++++++++++++++++++++")
-                check(code).getMaccheck()
+        if tmp == "1" or tmp == "2" or tmp == "5":
+            for l in f.readlines():
+                code = l.replace("\n", "")
+                if tmp == "1":
+                    check(code).getIpadcheck()
+                elif tmp == "2":
+                    check(code).getMaccheck()
+                else:
+                    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
+                    check(code).getIpadcheck()
+                    check(code).getMaccheck()
+
+        if tmp == "3" or tmp == "4":
+            for l in tqdm(f.readlines()):
+                code = l.replace("\n", "")
+                if tmp == "3":
+                    check(code).getIpadcheck(1)
+                elif tmp == "4":
+                    check(code).getMaccheck(1)
+            print("------------------可用码------------------")
+            for a in codeok:
+                print(a)
+            print("------------------不可用码------------------")
+            for b in codeerr:
+                print(b)
+
         input("按回车关闭。。。。")
     except:
         input("按回车键关闭。。。")
