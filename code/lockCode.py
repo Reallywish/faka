@@ -50,6 +50,9 @@ def lock(studentCode):
     elif "申请失败，您的购买次数已达上限！" in response:
         logging.error("{code}  申请失败，您的购买次数已达上限！".format(code=studentCode))
         input("按回车结束本程序！！！！！！！！")
+    elif "很遗憾本商品的申请次数已达上限" in response:
+        logging.error("{code}  申请失败，您的购买次数已达上限！".format(code=studentCode))
+        input("按回车结束本程序！！！！！！！！")
     else:
         lock(studentCode)
 

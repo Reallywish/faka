@@ -14,7 +14,7 @@ import logging
 # if not os.path.exists('./var/log/UdpPing/'):
 #     os.system('mkdir -p /var/log/UdpPing/')
 
-INTERVAL = 1000  # unit ms
+INTERVAL = int(sys.argv[7])  # unit ms
 LEN = 64
 IP = ""
 PORT = 0
@@ -33,7 +33,7 @@ def signal_handler():
     if count != 0:
         # print('%d packets transmitted, %d received, %.2f%% packet loss' % (
         #     count, count_of_received, (count - count_of_received) * 100.0 / count))
-        logging.warning('%d packets transmitted, %d received, %.2f%% packet loss' % (
+        logging.info('%d packets transmitted, %d received, %.2f%% packet loss' % (
             count, count_of_received, (count - count_of_received) * 100.0 / count))
         SendFalcon(value=float((count - count_of_received) * 100.0 / count), metric='UdpPingLoss')
     if count_of_received != 0:
@@ -42,6 +42,11 @@ def signal_handler():
         SendFalcon(value=float(rtt_min), metric='UdpPingMin')
         SendFalcon(value=float(rtt_sum / count_of_received), metric='UdpPingAvg')
         SendFalcon(value=float(rtt_max), metric='UdpPingMax')
+    else:
+        logging.info('rtt min/avg/max = %.2f/%.2f/%.2f ms' % (-2, -2, -2))
+        SendFalcon(value=-2, metric='UdpPingMin')
+        SendFalcon(value=-2, metric='UdpPingAvg')
+        SendFalcon(value=-2, metric='UdpPingMax')
 
 
 def random_string(length):
@@ -146,11 +151,11 @@ while True:
         rtt_max = max(rtt_max, rtt)
         rtt_min = min(rtt_min, rtt)
     else:
-        logging.error("Request timed out")
-        SendFalcon(value=100, metric='UdpPingLoss')
-        SendFalcon(value=-1, metric='UdpPingMin')
-        SendFalcon(value=-1, metric='UdpPingAvg')
-        SendFalcon(value=-1, metric='UdpPingMax')
+        logging.error("count: {count} => Request timed out".format(count=count))
+        # SendFalcon(value=100, metric='UdpPingLoss')
+        # SendFalcon(value=-1, metric='UdpPingMin')
+        # SendFalcon(value=-1, metric='UdpPingAvg')
+        # SendFalcon(value=-1, metric='UdpPingMax')
         sys.stdout.flush()
 
     if count == 60:
