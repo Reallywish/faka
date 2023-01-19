@@ -129,13 +129,13 @@ def get_record(status="check"):
         }
         response = requests.request("GET", url, headers=headers, data=payload).json()
         # print(response.json())
-        print(cookie.replace("\n",""))
+        print(cookie.replace("\n", ""))
         for data in response["data"]:
-            print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(data["xxxCheckCode"]) + "  验证时间：" + str(data[
-                "startTime"]) + "  失效时间：" + str(data["endTime"]))
-        if status != "check":
-            for id in response.json()['data']:
-                crearte_auth(int(id["id"]) - 1, cookie.replace("\n", ""))
+            print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(
+                data["xxxCheckCode"]) + "  验证时间：" + str(data[
+                                                            "startTime"]) + "  失效时间：" + str(data["endTime"]))
+            if status != "check":
+                crearte_auth(int(data["id"]) - 1, cookie.replace("\n", ""))
 
 
 def main():
