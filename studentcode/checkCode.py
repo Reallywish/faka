@@ -78,7 +78,7 @@ if __name__ == '__main__':
     try:
         tmp = raw_input("检测ipad请输入1，检测mac请输入2，输入3将IPAD总结输出，输入4将MAC总结输出。如果ipad和mac都检测请输入5:===> ")
 
-        f = open("./code", "r")
+        f = open("studentcode", "r")
         if tmp == "1" or tmp == "2" or tmp == "5":
             for l in f.readlines():
                 code = l.replace("\n", "")

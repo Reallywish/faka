@@ -60,7 +60,7 @@ def create_order(goods_id, goods_number, outer_order_sn):
     payload = {}
     headers = {}
     response = requests.request("GET", url, headers=headers, data=payload, timeout=5).text
-    # response = '{"code":0,"msg":"ok","data":{"card_list":["01TJ3UEYRJ3RB7ZKGX0P6PQ7YH7A"],"order_sn":"API_202203131138060389983","outer_order_sn":"888555222"}}'
+    # response = '{"studentcode":0,"msg":"ok","data":{"card_list":["01TJ3UEYRJ3RB7ZKGX0P6PQ7YH7A"],"order_sn":"API_202203131138060389983","outer_order_sn":"888555222"}}'
 
     print(response)
 
@@ -93,7 +93,7 @@ def login():
 
     responses = {}
     r = create_order(goods_id, goods_number, outer_order_sn)
-    responses["code"] = 0
+    responses["studentcode"] = 0
     responses["cards"] = r
 
     return responses

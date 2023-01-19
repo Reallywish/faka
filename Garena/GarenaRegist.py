@@ -117,7 +117,7 @@ def sendmail(mail):
 
 
 def get_verification_code(email):
-    # We want to get account validation code in email
+    # We want to get account validation studentcode in email
     validation_code = None
     # We will retry the request every 6 seconds to get the email
     for i in range(50000):
