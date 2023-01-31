@@ -38,7 +38,9 @@ def lock(studentCode, cookie, skuId):
         'accept-language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
         'cookie': cookie
     }
-    response = requests.request("GET", url, headers=json.loads(json.dumps(headers)), data=payload).text
+    session = requests.Session()
+    session.trust_env = False
+    response = session.request("GET", url, headers=json.loads(json.dumps(headers)), data=payload).text
     # response = "s"
     logging.info(studentCode + "使用 " + str(skuId) + "   验证结果========> " + str(response))
     if "账号申请次数已达上限" in response:
@@ -77,7 +79,9 @@ def lock(studentCode, cookie, skuId):
 #                 'accept-language': 'zh-CN,zh;q=0.9,en-US;q=0.8,en;q=0.7',
 #                 'cookie': 'pt_key=app_openAAJjx5gEAEDFKQ3RsnsyFz6vDqKFSFDnm5oZNjhIt_sDLUmdiboYwXg81AmJKuEOkz09m1om7VO5TzgWIKA2llLjDgVJLvyO'
 #             }
-#             response = requests.request("GET", url, headers=headers, data=payload)
+#             session = requests.Session()
+#             session.trust_env = False
+#             response = session.request("GET", url, headers=headers, data=payload)
 #             for sku in response.json()["data"]["skuList"]:
 #                 skuIds.append(sku["skuId"])
 #
@@ -104,7 +108,9 @@ def crearte_auth(id, cookie):
         'sec-fetch-site': 'same-site',
         'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
     }
-    response = requests.request("GET", url, headers=headers, data=payload)
+    session = requests.Session()
+    session.trust_env = False
+    response = session.request("GET", url, headers=headers, data=payload)
     print(response.text)
 
 
@@ -127,15 +133,20 @@ def get_record(status="check"):
             'sec-fetch-site': 'same-site',
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
         }
-        response = requests.request("GET", url, headers=headers, data=payload).json()
-        # print(response.json())
-        print(cookie.replace("\n", ""))
-        for data in response["data"]:
-            print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(
-                data["xxxCheckCode"]) + "  验证时间：" + str(data[
-                                                            "startTime"]) + "  失效时间：" + str(data["endTime"]))
-            if status != "check":
-                crearte_auth(int(data["id"]) - 1, cookie.replace("\n", ""))
+        try:
+            session = requests.Session()
+            session.trust_env = False
+            response = session.request("GET", url, headers=headers, data=payload).json()
+            # print(response.json())
+            print(cookie.replace("\n", ""))
+            for data in response["data"]:
+                print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(
+                    data["xxxCheckCode"]) + "  验证时间：" + str(data[
+                                                                "startTime"]) + "  失效时间：" + str(data["endTime"]))
+                if status != "check":
+                    crearte_auth(int(data["id"]) - 1, cookie.replace("\n", ""))
+        except:
+            print(cookie.replace("\n", "") + "       EROOR!!!!  =====> 该cookie 可能已经失效！请验证")
 
 
 def main():
@@ -146,7 +157,7 @@ def main():
         else:
             logging.error("未获取到cookie！！！！！！请在程序目录创建cookie.ini文件写入cookie即可！！！！")
             input('按回车结束本程序！！！！！！！！')
-        f = open("code", "r").readlines()
+        f = open("studentcode.txt", "r").readlines()
         b = [f[i:i + 5] for i in range(0, len(f), 5)]
 
         # mac
@@ -163,16 +174,19 @@ def main():
 
 
 if __name__ == '__main__':
-    tmp = raw_input("输入1检测cookie是否有绑定，输入2 进行解绑，输入3进行锁码：===> ")
-    if tmp == "1":
-        get_record()
-        input('按回车结束本程序！！！！！！！！')
-    elif tmp == "2":
-        get_record("2")
-        input('按回车结束本程序！！！！！！！！')
-    elif tmp == "3":
-        main()
-        input('按回车结束本程序！！！！！！！！')
-    else:
-        print("请按要求输入·····")
-        input('按回车结束本程序！！！！！！！！')
+    try:
+        tmp = raw_input("输入1检测cookie是否有绑定，输入2 进行解绑，输入3进行锁码：===> ")
+        if tmp == "1":
+            get_record()
+            input('按回车结束本程序！！！！！！！！')
+        elif tmp == "2":
+            get_record("2")
+            input('按回车结束本程序！！！！！！！！')
+        elif tmp == "3":
+            main()
+            input('按回车结束本程序！！！！！！！！')
+        else:
+            print("请按要求输入·····")
+            input('按回车结束本程序！！！！！！！！')
+    except:
+        input("ERROR!!!!!!程序异常退出，请检查是否执行成功，按回车退出")

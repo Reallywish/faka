@@ -34,8 +34,9 @@ class check:
             'content-type': 'application/x-www-form-urlencoded',
             'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
         }
-
-        response = requests.request("POST", url, headers=headers, data=payload)
+        session = requests.Session()
+        session.trust_env = False
+        response = session.request("POST", url, headers=headers, data=payload)
         if status == 1:
             if "true" in str(response.text):
                 # print(self.studentCode)
@@ -59,7 +60,9 @@ class check:
             'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
         }
 
-        response = requests.request("POST", url, headers=headers, data=payload)
+        session = requests.Session()
+        session.trust_env = False
+        response = session.request("POST", url, headers=headers, data=payload)
         if status == 1:
             if "true" in str(response.text):
                 # print(self.studentCode)
