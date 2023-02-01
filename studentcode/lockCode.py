@@ -157,7 +157,7 @@ def main():
         else:
             logging.error("未获取到cookie！！！！！！请在程序目录创建cookie.ini文件写入cookie即可！！！！")
             input('按回车结束本程序！！！！！！！！')
-        f = open("studentcode.txt", "r").readlines()
+        f = open("studentcode", "r").readlines()
         b = [f[i:i + 5] for i in range(0, len(f), 5)]
 
         # mac
