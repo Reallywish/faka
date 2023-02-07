@@ -381,32 +381,32 @@ def appjmp(wskey, tokenKey):  # 方法 传递 wskey & tokenKey
                 return True, jd_ck  # 返回 -> True[Bool], jd_ck
 
 
-def update():  # 方法 脚本更新模块
-    up_ver = int(cloud_arg['update'])  # 云端参数取值 [int]
-    if ver >= up_ver:  # 判断版本号大小
-        print("当前脚本版本: " + str(ver))  # 标准日志输出
-        print("--------------------\n")  # 标准日志输出
-    else:  # 判断分支
-        print("当前脚本版本: " + str(ver) + "新版本: " + str(up_ver))  # 标准日志输出
-        print("存在新版本, 请更新脚本后执行")  # 标准日志输出
-        print("--------------------\n")  # 标准日志输出
-        text = '当前脚本版本: {0}新版本: {1}, 请更新脚本~!'.format(ver, up_ver)  # 设置发送内容
-        # ql_send(text)
-        # sys.exit(0)  # 退出脚本 [未启用]
+# def update():  # 方法 脚本更新模块
+#     up_ver = int(cloud_arg['update'])  # 云端参数取值 [int]
+#     if ver >= up_ver:  # 判断版本号大小
+#         print("当前脚本版本: " + str(ver))  # 标准日志输出
+#         print("--------------------\n")  # 标准日志输出
+#     else:  # 判断分支
+#         print("当前脚本版本: " + str(ver) + "新版本: " + str(up_ver))  # 标准日志输出
+#         print("存在新版本, 请更新脚本后执行")  # 标准日志输出
+#         print("--------------------\n")  # 标准日志输出
+#         text = '当前脚本版本: {0}新版本: {1}, 请更新脚本~!'.format(ver, up_ver)  # 设置发送内容
+#         # ql_send(text)
+#         # sys.exit(0)  # 退出脚本 [未启用]
 
 
-def ql_check(port):  # 方法 检查青龙端口
-    sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Socket模块初始化
-    sock.settimeout(2)  # 设置端口超时
-    try:  # 异常捕捉
-        sock.connect(('127.0.0.1', port))  # 请求端口
-    except Exception as err:  # 捕捉异常
-        print(str(err))  # 调试日志输出
-        sock.close()  # 端口关闭
-        return False  # 返回 -> False[Bool]
-    else:  # 分支判断
-        sock.close()  # 关闭端口
-        return True  # 返回 -> True[Bool]
+# def ql_check(port):  # 方法 检查青龙端口
+#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Socket模块初始化
+#     sock.settimeout(2)  # 设置端口超时
+#     try:  # 异常捕捉
+#         sock.connect(('127.0.0.1', port))  # 请求端口
+#     except Exception as err:  # 捕捉异常
+#         print(str(err))  # 调试日志输出
+#         sock.close()  # 端口关闭
+#         return False  # 返回 -> False[Bool]
+#     else:  # 分支判断
+#         sock.close()  # 关闭端口
+#         return True  # 返回 -> True[Bool]
 
 
 # def serch_ck(pin):  # 方法 搜索 Pin
@@ -546,26 +546,26 @@ def check_cloud():  # 方法 云端地址检查
     sys.exit(1)  # 脚本退出
 
 
-def check_port():  # 方法 检查变量传递端口
-    print("\n--------------------\n")  # 标准日志输出
-    if "QL_PORT" in os.environ:  # 判断 系统变量是否存在[QL_PORT]
-        try:  # 异常捕捉
-            port = int(os.environ['QL_PORT'])  # 取值 [int]
-        except Exception as err:  # 异常捕捉
-            print(str(err))  # 调试日志输出
-            print("变量格式有问题...\n格式: export QL_PORT=\"端口号\"")  # 标准日志输出
-            print("使用默认端口5700")  # 标准日志输出
-            return 5700  # 返回端口 5700
-    else:  # 判断分支
-        port = 5700  # 默认5700端口
-    if not ql_check(port):  # 调用方法 [ql_check] 传递 [port]
-        print(
-            str(port) + "端口检查失败, 如果改过端口, 请在变量中声明端口 \n在config.sh中加入 export QL_PORT=\"端口号\"")  # 标准日志输出
-        print("\n如果你很确定端口没错, 还是无法执行, 在GitHub给我发issus\n--------------------\n")  # 标准日志输出
-        sys.exit(1)  # 脚本退出
-    else:  # 判断分支
-        print(str(port) + "端口检查通过")  # 标准日志输出
-        return port  # 返回->port
+# def check_port():  # 方法 检查变量传递端口
+#     print("\n--------------------\n")  # 标准日志输出
+#     if "QL_PORT" in os.environ:  # 判断 系统变量是否存在[QL_PORT]
+#         try:  # 异常捕捉
+#             port = int(os.environ['QL_PORT'])  # 取值 [int]
+#         except Exception as err:  # 异常捕捉
+#             print(str(err))  # 调试日志输出
+#             print("变量格式有问题...\n格式: export QL_PORT=\"端口号\"")  # 标准日志输出
+#             print("使用默认端口5700")  # 标准日志输出
+#             return 5700  # 返回端口 5700
+#     else:  # 判断分支
+#         port = 5700  # 默认5700端口
+#     if not ql_check(port):  # 调用方法 [ql_check] 传递 [port]
+#         print(
+#             str(port) + "端口检查失败, 如果改过端口, 请在变量中声明端口 \n在config.sh中加入 export QL_PORT=\"端口号\"")  # 标准日志输出
+#         print("\n如果你很确定端口没错, 还是无法执行, 在GitHub给我发issus\n--------------------\n")  # 标准日志输出
+#         sys.exit(1)  # 脚本退出
+#     else:  # 判断分支
+#         print(str(port) + "端口检查通过")  # 标准日志输出
+#         return port  # 返回->port
 
 
 if __name__ == '__main__':  # Python主函数执行入口
