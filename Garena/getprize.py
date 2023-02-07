@@ -81,5 +81,6 @@ def start_(cookie, csrftoken):
 
 
 if __name__ == '__main__':
-    hero = [1, 102, 11, 16, 18, 36, 37, 5, 51, 53, 54, 57, 81, 90, 99]
-    grade = [5, 10, 12, 15, 16, 18, 20, 22, 24, 26, 29, 28]
+    start_(
+        "sessionid=6yn1181xgxe73f4tko42fnfehb5c81o6; csrftoken=v1FdAJvIBnx1uplqjosFIBdApH02Wt6R52aq5ZwEmm6lWbaTBroNc89TTl2DbENG; _ga=GA1.2.411734966.1666075357; _gid=GA1.2.189220179.1666075357; _gat=1; _gat_gtag_UA_98198237_12=1",
+        "v1FdAJvIBnx1uplqjosFIBdApH02Wt6R52aq5ZwEmm6lWbaTBroNc89TTl2DbENG")

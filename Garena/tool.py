@@ -8,27 +8,38 @@ import simplejson as json
 
 from Garena.getprize import start_
 
-option = ChromeOptions()
+# option = ChromeOptions()
+# C:\Users\Administrator\AppData\Local\Google\Chrome\User Data
+# option.add_argument("--user-data-dir=" + r"C:/Users/15986/AppData/Local/Google/Chrome/User Data")
 
-option.add_argument("--user-data-dir=" + r"C:/Users/Administrator/AppData/Local/Google/Chrome/User Data/")
+# option.add_experimental_option('excludeSwitches', ['enable-automation'])
+# option.add_argument("--no-sandbox")
+# option.add_argument("--lang=zh-CN")
 
-option.add_experimental_option('excludeSwitches', ['enable-automation'])
-option.add_argument("--no-sandbox")
-option.add_argument("--lang=zh-CN")
+options = webdriver.FirefoxOptions()
+options.add_argument('--headless')
 
-browser = webdriver.Chrome(options=option)
+browser = webdriver.Firefox(executable_path=r"E:\python\faka\Garena\geckodriver.exe",
+                            firefox_binary=r"C:\Program Files\Mozilla Firefox\firefox.exe",
+                            options=options)
 
-browser.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
-    "source": """
-    Object.defineProperty(navigator, 'webdriver', {
-      get: () => undefined
-    })
-  """
-})
+
+
+
+
+
+# browser.execute_cdp_cmd("Page.addScriptToEvaluateOnNewDocument", {
+#     "source": """
+#     Object.defineProperty(navigator, 'webdriver', {
+#       get: () => undefined
+#     })
+#   """
+# })
+browser.implicitly_wait(10)
 
 browser.get(
-    'https://auth.garena.com/oauth/login?redirect_uri=https%3A%2F%2Fnewsummoners.lol.garena.tw%2Fgarena_oauth%2Flogin%2Fcallback%2F&client_id=200032&response_type=token&locale=zh-TW')
-time.sleep(20)
+    'https://newsummoners.lol.garena.tw')
+time.sleep(2000)
 cookies = browser.get_cookies()
 c = []
 csrftoken = ""
