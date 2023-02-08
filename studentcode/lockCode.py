@@ -142,7 +142,8 @@ def get_record(status="check"):
             for data in response["data"]:
                 print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(
                     data["xxxCheckCode"]) + "  验证时间：" + str(data[
-                                                                "startTime"]) + "  失效时间：" + str(data["endTime"]))
+                                                                    "startTime"]) + "  失效时间：" + str(
+                    data["endTime"]))
                 if status != "check":
                     crearte_auth(int(data["id"]) - 1, cookie.replace("\n", ""))
         except:
@@ -163,7 +164,11 @@ def main():
         # mac
         # skuIds = ["100009554947", "100016751652", "100009554935", "100029820099", "100029820113"]
         # ipad
-        skuIds = ["100019718287", "100034710084", "100019718259", "100034710060", "100019718261"]
+        # skuIds = ["100019718259", "100019718261", "100034710052","100019718309","100019718311"]
+
+        f = open("./skuids.ini", "r")
+        skuIds = f.readline().split(",")
+        print(skuIds)
 
         for c in cookies:
             cookie = c.replace("\n", "")
