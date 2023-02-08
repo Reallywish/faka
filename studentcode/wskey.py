@@ -11,6 +11,9 @@ import time  # 时间
 import re  # 正则过滤
 import hmac
 import struct
+import urllib3
+
+urllib3.disable_warnings()
 
 
 def ttotp(key):
@@ -231,9 +234,14 @@ def check_cloud():  # 方法 云端地址检查
 
 if __name__ == '__main__':  # Python主函数执行入口
 
-    url_t = check_cloud()  # 调用方法 [check_cloud] 并赋值 [url_t]
-    cloud_arg = cloud_info()  # 调用方法 [cloud_info] 并赋值 [cloud_arg]
-    ua = cloud_arg['User-Agent']
-    ws = ""
-    return_ws = getToken(ws)
-    print(return_ws)
+    wss = open("./wskyes.ini", "r")
+    cookieFileStream = open("./cookie.ini", "a+")
+    for ws in wss:
+        url_t = check_cloud()  # 调用方法 [check_cloud] 并赋值 [url_t]
+        cloud_arg = cloud_info()  # 调用方法 [cloud_info] 并赋值 [cloud_arg]
+        ua = cloud_arg['User-Agent']
+
+        return_ws = getToken(ws.strip())
+        print(return_ws)
+        if return_ws[0]:
+            cookieFileStream.write(str(return_ws[1]) + "\n")
