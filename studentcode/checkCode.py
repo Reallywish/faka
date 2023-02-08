@@ -36,15 +36,18 @@ class check:
         }
         session = requests.Session()
         session.trust_env = False
-        response = session.request("POST", url, headers=headers, data=payload)
+        try:
+            response = session.request("POST", url, headers=headers, data=payload).json()
+        except:
+            response = "false"
         if status == 1:
-            if "true" in str(response.text):
+            if "True" in str(response):
                 # print(self.studentCode)
                 codeok.append(self.studentCode + "\r")
             else:
                 codeerr.append(self.studentCode + "\r")
         else:
-            print(self.studentCode + "   结果：" + str(response.json()))
+            print(self.studentCode + "   结果：" + str(response))
 
     def getIpadcheck(self, status=0):
         url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
@@ -62,18 +65,21 @@ class check:
 
         session = requests.Session()
         session.trust_env = False
-        response = session.request("POST", url, headers=headers, data=payload)
+        try:
+            response = session.request("POST", url, headers=headers, data=payload).json()
+        except:
+            response = "false"
         if status == 1:
-            if "true" in str(response.text):
+            if "True" in str(response):
                 # print(self.studentCode)
                 codeok.append(self.studentCode + "\r")
             else:
                 codeerr.append(self.studentCode + "\r")
         elif status == 2:
-            if "true" not in str(response.text):
+            if "True" not in str(response):
                 print(self.studentCode)
         else:
-            print(self.studentCode + "   结果：" + str(response.json()))
+            print(self.studentCode + "   结果：" + str(response))
 
 
 if __name__ == '__main__':
@@ -84,7 +90,7 @@ if __name__ == '__main__':
         f = open("studentcode", "r")
         if tmp == "1" or tmp == "2" or tmp == "5":
             for l in f.readlines():
-                code = l.replace("\n", "")
+                code = l.strip()
                 if tmp == "1":
                     check(code).getIpadcheck()
                 elif tmp == "2":
@@ -96,17 +102,17 @@ if __name__ == '__main__':
 
         if tmp == "3" or tmp == "4":
             for l in tqdm(f.readlines()):
-                code = l.replace("\n", "")
+                code = l.strip()
                 if tmp == "3":
                     check(code).getIpadcheck(1)
                 elif tmp == "4":
                     check(code).getMaccheck(1)
-            print("------------------可用码------------------")
-            for a in codeok:
-                print(a)
             print("------------------不可用码------------------")
             for b in codeerr:
                 print(b)
+            print("------------------可用码------------------")
+            for a in codeok:
+                print(a)
 
         input("按回车关闭。。。。")
     except:
