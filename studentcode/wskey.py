@@ -2,80 +2,16 @@
 '''
 new Env('wskey转换');
 '''
-import socket  # 用于端口检测
 import base64  # 用于编解码
 import json  # 用于Json解析
 import os  # 用于导入系统变量
 import sys  # 实现 sys.exit
-import logging  # 用于日志输出
 import requests
 import time  # 时间
 import re  # 正则过滤
 import hmac
 import struct
 
-# WSKEY_MODE = 0
-# 0 = Default / 1 = Debug!
-
-# if "WSKEY_DEBUG" in os.environ or WSKEY_MODE:  # 判断调试模式变量
-#     logging.basicConfig(level=logging.DEBUG, format='%(message)s')  # 设置日志为 Debug等级输出
-#     logger = logging.getLogger(__name__)  # 主模块
-#     print("\nDEBUG模式开启!\n")  # 消息输出
-# else:  # 判断分支
-#     logging.basicConfig(level=logging.INFO, format='%(message)s')  # Info级日志
-#     logger = logging.getLogger(__name__)  # 主模块
-# 
-# try:  # 异常捕捉
-#     import requests  # 导入HTTP模块
-# except Exception as e:  # 异常捕捉
-#     print(str(e) + "\n缺少requests模块, 请执行命令：pip3 install requests\n")  # 日志输出
-#     sys.exit(1)  # 退出脚本
-# os.environ['no_proxy'] = '*'  # 禁用代理
-# requests.packages.urllib3.disable_warnings()  # 抑制错误
-# try:  # 异常捕捉
-#     from notify import send  # 导入青龙消息通知模块
-# except Exception as err:  # 异常捕捉
-#     print(str(err))  # 调试日志输出
-#     print("无推送文件")  # 标准日志输出
-
-ver = 21212  # 版本号
-
-
-# def ql_2fa():
-#     ''' Demo
-#     if "WSKEY_TOKEN" in os.environ:
-#     url = 'http://127.0.0.1:{0}/api/user'.format(port)  # 设置 URL地址
-#     try:  # 异常捕捉
-#         res = s.get(url)  # HTTP请求 [GET] 使用 session
-#     except Exception as err:  # 异常捕捉
-#         print(str(err))  # 调试日志输出
-#     else:  # 判断分支
-#         if res.status_code == 200 and res.json()["code"] == 200:
-#             twoFactorActivated = str(res.json()["data"]["twoFactorActivated"])
-#             if twoFactorActivated == 'true':
-#                 print("青龙 2FA 已开启!")
-#     url = 'http://127.0.0.1:{0}/api/envs?searchValue=WSKEY_Client'.format(port)  # 设置 URL地址
-#     res = s.get(url)
-#     if res.status_code == 200 and res.json()["code"] == 200:
-#         data = res.json()["data"]
-#         if len(data) == 0:
-#             url = 'http://127.0.0.1:{0}/api/apps'
-#             data = json.dumps({
-#                 "name": "wskey",
-#                 "scopes": ["crons", "envs", "configs", "scripts", "logs", "dependencies", "system"]
-#             })
-#             res = s.post(url, data=data)
-#             if res.status_code == 200 and res.json()["code"] == 200:
-#                 print("OpenApi创建成功")
-#                 client_id = res.json()["data"]["client_id"]
-#                 client_secret = res.json()["data"]["client_secret"]
-#                 wskey_value = 'client_id={0}&client_secret={1}'.format(client_id, client_secret)
-#                 data = [{"value": wskey_value, "name": "WSKEY_Client", "remarks": "WSKEY_OpenApi请勿删除"}]
-#                 data = json.dumps(data)  # Json格式化数据
-#                 url = 'http://127.0.0.1:{0}/api/envs'.format(port)  # 设置 URL地址
-#                 s.post(url=url, data=data)  # HTTP[POST]请求 使用session
-#                 print("\nWSKEY_Client变量添加完成\n--------------------\n")  # 标准日志输出
-#     '''
 
 def ttotp(key):
     key = base64.b32decode(key.upper() + '=' * ((8 - len(key)) % 8))
@@ -86,141 +22,6 @@ def ttotp(key):
     return str(binary)[-6:].zfill(6)
 
 
-# def ql_send(text):
-#     if "WSKEY_SEND" in os.environ and os.environ["WSKEY_SEND"] == 'disable':
-#         return True
-#     else:
-#         try:  # 异常捕捉
-#             send('WSKEY转换', text)  # 消息发送
-#         except Exception as err:  # 异常捕捉
-#             print(str(err))  # Debug日志输出
-#             print("通知发送失败")  # 标准日志输出
-
-
-# 登录青龙 返回值 token
-# def get_qltoken(username, password, twoFactorSecret):  # 方法 用于获取青龙 Token
-#     print("Token失效, 新登陆\n")  # 日志输出
-#     if twoFactorSecret:
-#         try:
-#             twoCode = ttotp(twoFactorSecret)
-#         except Exception as err:
-#             print(str(err))  # Debug日志输出
-#             print("TOTP异常")
-#             sys.exit(1)
-#         url = ql_url + "api/user/login"  # 设置青龙地址 使用 format格式化自定义端口
-#         payload = json.dumps({
-#             'username': username,
-#             'password': password
-#         })  # HTTP请求载荷
-#         headers = {
-#             'Accept': 'application/json',
-#             'Content-Type': 'application/json'
-#         }  # HTTP请求头 设置为 Json格式
-#         try:  # 异常捕捉
-#             res = requests.post(url=url, headers=headers, data=payload)  # 使用 requests模块进行 HTTP POST请求
-#             if res.status_code == 200 and res.json()["code"] == 420:
-#                 url = ql_url + 'api/user/two-factor/login'
-#                 data = json.dumps({
-#                     "username": username,
-#                     "password": password,
-#                     "code": twoCode
-#                 })
-#                 res = requests.put(url=url, headers=headers, data=data)
-#                 if res.status_code == 200 and res.json()["code"] == 200:
-#                     token = res.json()["data"]['token']  # 从 res.text 返回值中 取出 Token值
-#                     return token
-#                 else:
-#                     print("两步校验失败\n")  # 日志输出
-#                     sys.exit(1)
-#             elif res.status_code == 200 and res.json()["code"] == 200:
-#                 token = res.json()["data"]['token']  # 从 res.text 返回值中 取出 Token值
-#                 return token
-#         except Exception as err:
-#             print(str(err))  # Debug日志输出
-#             sys.exit(1)
-#     else:
-#         url = ql_url + 'api/user/login'
-#         payload = {
-#             'username': username,
-#             'password': password
-#         }  # HTTP请求载荷
-#         payload = json.dumps(payload)  # json格式化载荷
-#         headers = {
-#             'Accept': 'application/json',
-#             'Content-Type': 'application/json'
-#         }  # HTTP请求头 设置为 Json格式
-#         try:  # 异常捕捉
-#             res = requests.post(url=url, headers=headers, data=payload)  # 使用 requests模块进行 HTTP POST请求
-#             if res.status_code == 200 and res.json()["code"] == 200:
-#                 token = res.json()["data"]['token']  # 从 res.text 返回值中 取出 Token值
-#                 return token
-#             else:
-#                 ql_send("青龙登录失败!")
-#                 sys.exit(1)  # 脚本退出
-#         except Exception as err:
-#             print(str(err))  # Debug日志输出
-#             print("使用旧版青龙登录接口")
-#             url = ql_url + 'api/login'  # 设置青龙地址 使用 format格式化自定义端口
-#             payload = {
-#                 'username': username,
-#                 'password': password
-#             }  # HTTP请求载荷
-#             payload = json.dumps(payload)  # json格式化载荷
-#             headers = {
-#                 'Accept': 'application/json',
-#                 'Content-Type': 'application/json'
-#             }  # HTTP请求头 设置为 Json格式
-#             try:  # 异常捕捉
-#                 res = requests.post(url=url, headers=headers, data=payload)  # 使用 requests模块进行 HTTP POST请求
-#                 token = json.loads(res.text)["data"]['token']  # 从 res.text 返回值中 取出 Token值
-#             except Exception as err:  # 异常捕捉
-#                 print(str(err))  # Debug日志输出
-#                 print("青龙登录失败, 请检查面板状态!")  # 标准日志输出
-#                 ql_send('青龙登陆失败, 请检查面板状态.')
-#                 sys.exit(1)  # 脚本退出
-#             else:  # 无异常执行分支
-#                 return token  # 返回 token值
-#         # else:  # 无异常执行分支
-#         #     return token  # 返回 token值
-
-
-# 返回值 Token
-# def ql_login():  # 方法 青龙登录(获取Token 功能同上)
-#     path = '/ql/config/auth.json'  # 设置青龙 auth文件地址
-#     if not os.path.isfile(path):
-#         path = '/ql/data/config/auth.json'  # 尝试设置青龙 auth 新版文件地址
-#     if os.path.isfile(path):  # 进行文件真值判断
-#         with open(path, "r") as file:  # 上下文管理
-#             auth = file.read()  # 读取文件
-#             file.close()  # 关闭文件
-#         auth = json.loads(auth)  # 使用 json模块读取
-#         username = auth["username"]  # 提取 username
-#         password = auth["password"]  # 提取 password
-#         token = auth["token"]  # 提取 authkey
-#         try:
-#             twoFactorSecret = auth["twoFactorSecret"]
-#         except Exception as err:
-#             print(str(err))  # Debug日志输出
-#             twoFactorSecret = ''
-#         if token == '':  # 判断 Token是否为空
-#             return get_qltoken(username, password, twoFactorSecret)  # 调用方法 get_qltoken 传递 username & password
-#         else:  # 判断分支
-#             url = ql_url + 'api/user'  # 设置URL请求地址 使用 Format格式化端口
-#             headers = {
-#                 'Authorization': 'Bearer {0}'.format(token),
-#                 'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/94.0.4606.71 Safari/537.36 Edg/94.0.992.38'
-#             }  # 设置用于 HTTP头
-#             res = requests.get(url=url, headers=headers)  # 调用 request模块发送 get请求
-#             if res.status_code == 200:  # 判断 HTTP返回状态码
-#                 return token  # 有效 返回 token
-#             else:  # 判断分支
-#                 return get_qltoken(username, password, twoFactorSecret)  # 调用方法 get_qltoken 传递 username & password
-#     else:  # 判断分支
-#         print("没有发现auth文件, 你这是青龙吗???")  # 输出标准日志
-#         sys.exit(0)  # 脚本退出
-
-
-# 返回值 list[wskey]
 def get_wskey():  # 方法 获取 wskey值 [系统变量传递]
     if "JD_WSCK" in os.environ:  # 判断 JD_WSCK是否存在于环境变量
         wskey_list = os.environ['JD_WSCK'].split('&')  # 读取系统变量 以 & 分割变量
@@ -381,123 +182,6 @@ def appjmp(wskey, tokenKey):  # 方法 传递 wskey & tokenKey
                 return True, jd_ck  # 返回 -> True[Bool], jd_ck
 
 
-# def update():  # 方法 脚本更新模块
-#     up_ver = int(cloud_arg['update'])  # 云端参数取值 [int]
-#     if ver >= up_ver:  # 判断版本号大小
-#         print("当前脚本版本: " + str(ver))  # 标准日志输出
-#         print("--------------------\n")  # 标准日志输出
-#     else:  # 判断分支
-#         print("当前脚本版本: " + str(ver) + "新版本: " + str(up_ver))  # 标准日志输出
-#         print("存在新版本, 请更新脚本后执行")  # 标准日志输出
-#         print("--------------------\n")  # 标准日志输出
-#         text = '当前脚本版本: {0}新版本: {1}, 请更新脚本~!'.format(ver, up_ver)  # 设置发送内容
-#         # ql_send(text)
-#         # sys.exit(0)  # 退出脚本 [未启用]
-
-
-# def ql_check(port):  # 方法 检查青龙端口
-#     sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)  # Socket模块初始化
-#     sock.settimeout(2)  # 设置端口超时
-#     try:  # 异常捕捉
-#         sock.connect(('127.0.0.1', port))  # 请求端口
-#     except Exception as err:  # 捕捉异常
-#         print(str(err))  # 调试日志输出
-#         sock.close()  # 端口关闭
-#         return False  # 返回 -> False[Bool]
-#     else:  # 分支判断
-#         sock.close()  # 关闭端口
-#         return True  # 返回 -> True[Bool]
-
-
-# def serch_ck(pin):  # 方法 搜索 Pin
-#     for i in range(len(envlist)):  # For循环 变量[envlist]的数量
-#         if "name" not in envlist[i] or envlist[i]["name"] != "JD_COOKIE":  # 判断 envlist内容
-#             continue  # 继续循环
-#         if pin in envlist[i]['value']:  # 判断envlist取值['value']
-#             value = envlist[i]['value']  # 取值['value']
-#             id = envlist[i][ql_id]  # 取值 [ql_id](变量)
-#             print(str(pin) + "检索成功\n")  # 标准日志输出
-#             return True, value, id  # 返回 -> True[Bool], value, id
-#         else:  # 判断分支
-#             continue  # 继续循环
-#     print(str(pin) + "检索失败\n")  # 标准日志输出
-#     return False, 1  # 返回 -> False[Bool], 1
-
-
-# def get_env():  # 方法 读取变量
-#     url = ql_url + 'api/envs'
-#     try:  # 异常捕捉
-#         res = s.get(url)  # HTTP请求 [GET] 使用 session
-#     except Exception as err:  # 异常捕捉
-#         print(str(err))  # 调试日志输出
-#         print("\n青龙环境接口错误")  # 标准日志输出
-#         sys.exit(1)  # 脚本退出
-#     else:  # 判断分支
-#         data = json.loads(res.text)['data']  # 使用Json模块提取值[data]
-#         return data  # 返回 -> data
-
-
-# def check_id():  # 方法 兼容青龙老版本与新版本 id & _id的问题
-#     url = ql_url + 'api/envs'
-#     try:  # 异常捕捉
-#         res = s.get(url).json()  # HTTP[GET] 请求 使用 session
-#     except Exception as err:  # 异常捕捉
-#         print(str(err))  # 调试日志输出
-#         print("\n青龙环境接口错误")  # 标准日志输出
-#         sys.exit(1)  # 脚本退出
-#     else:  # 判断分支
-#         if '_id' in res['data'][0]:  # 判断 [_id]
-#             print("使用 _id 键值")  # 标准日志输出
-#             return '_id'  # 返回 -> '_id'
-#         else:  # 判断分支
-#             print("使用 id 键值")  # 标准日志输出
-#             return 'id'  # 返回 -> 'id'
-
-
-# def ql_update(e_id, n_ck):  # 方法 青龙更新变量 传递 id cookie
-#     url = ql_url + 'api/envs'
-#     data = {
-#         "name": "JD_COOKIE",
-#         "value": n_ck,
-#         ql_id: e_id
-#     }  # 设置 HTTP POST 载荷
-#     data = json.dumps(data)  # json模块格式化
-#     s.put(url=url, data=data)  # HTTP [PUT] 请求 使用 session
-#     ql_enable(eid)  # 调用方法 ql_enable 传递 eid
-
-
-# def ql_enable(e_id):  # 方法 青龙变量启用 传递值 eid
-#     url = ql_url + 'api/envs/enable'
-#     data = '["{0}"]'.format(e_id)  # 格式化 POST 载荷
-#     res = json.loads(s.put(url=url, data=data).text)  # json模块读取 HTTP[PUT] 的返回值
-#     if res['code'] == 200:  # 判断返回值为 200
-#         print("\n账号启用\n--------------------\n")  # 标准日志输出
-#         return True  # 返回 ->True
-#     else:  # 判断分支
-#         print("\n账号启用失败\n--------------------\n")  # 标准日志输出
-#         return False  # 返回 -> Fasle
-
-
-# def ql_disable(e_id):  # 方法 青龙变量禁用 传递 eid
-#     url = ql_url + 'api/envs/disable'
-#     data = '["{0}"]'.format(e_id)  # 格式化 POST 载荷
-#     res = json.loads(s.put(url=url, data=data).text)  # json模块读取 HTTP[PUT] 的返回值
-#     if res['code'] == 200:  # 判断返回值为 200
-#         print("\n账号禁用成功\n--------------------\n")  # 标准日志输出
-#         return True  # 返回 ->True
-#     else:  # 判断分支
-#         print("\n账号禁用失败\n--------------------\n")  # 标准日志输出
-#         return False  # 返回 -> Fasle
-
-
-# def ql_insert(i_ck):  # 方法 插入新变量
-#     data = [{"value": i_ck, "name": "JD_COOKIE"}]  # POST数据载荷组合
-#     data = json.dumps(data)  # Json格式化数据
-#     url = ql_url + 'api/envs'
-#     s.post(url=url, data=data)  # HTTP[POST]请求 使用session
-#     print("\n账号添加完成\n--------------------\n")  # 标准日志输出
-
-
 def cloud_info():  # 方法 云端信息
     url = str(base64.b64decode(url_t).decode()) + 'api/check_api'  # 设置 URL地址 路由 [check_api]
     for i in range(3):  # For循环 3次
@@ -542,111 +226,14 @@ def check_cloud():  # 方法 云端地址检查
             print(str(info[url_list.index(i)]) + " Server Check OK\n--------------------\n")  # 标准日志输出
             return i  # 返回 ->i
     print("\n云端地址全部失效, 请检查网络!")  # 标准日志输出
-    # ql_send('云端地址失效. 请联系作者或者检查网络.')  # 推送消息
     sys.exit(1)  # 脚本退出
-
-
-# def check_port():  # 方法 检查变量传递端口
-#     print("\n--------------------\n")  # 标准日志输出
-#     if "QL_PORT" in os.environ:  # 判断 系统变量是否存在[QL_PORT]
-#         try:  # 异常捕捉
-#             port = int(os.environ['QL_PORT'])  # 取值 [int]
-#         except Exception as err:  # 异常捕捉
-#             print(str(err))  # 调试日志输出
-#             print("变量格式有问题...\n格式: export QL_PORT=\"端口号\"")  # 标准日志输出
-#             print("使用默认端口5700")  # 标准日志输出
-#             return 5700  # 返回端口 5700
-#     else:  # 判断分支
-#         port = 5700  # 默认5700端口
-#     if not ql_check(port):  # 调用方法 [ql_check] 传递 [port]
-#         print(
-#             str(port) + "端口检查失败, 如果改过端口, 请在变量中声明端口 \n在config.sh中加入 export QL_PORT=\"端口号\"")  # 标准日志输出
-#         print("\n如果你很确定端口没错, 还是无法执行, 在GitHub给我发issus\n--------------------\n")  # 标准日志输出
-#         sys.exit(1)  # 脚本退出
-#     else:  # 判断分支
-#         print(str(port) + "端口检查通过")  # 标准日志输出
-#         return port  # 返回->port
 
 
 if __name__ == '__main__':  # Python主函数执行入口
 
-    # ql_id = check_id()  # 调用方法 [check_id] 并赋值 [ql_id]
     url_t = check_cloud()  # 调用方法 [check_cloud] 并赋值 [url_t]
     cloud_arg = cloud_info()  # 调用方法 [cloud_info] 并赋值 [cloud_arg]
     ua = cloud_arg['User-Agent']
-    ws = "pin=jd_5a1cd101eae6d;wskey=AAJj3w6PAEA6CYb4jwkpx_fx1BJJu4vAvrl3iNSQKblijRsDZ9TzfOWnHRIzmS2UNdzfpaxw5EL5dRRMpR8KZc8IDpXQ6vTz;whwswswws=JD012145b9og90YffWQy167576697020804Dp7o5L_UafLaZKljjsjmQIZZBMhBuEgjv9HV6rNtpESqMLQMeKwROGU0qVbFLmjlULsJvk_m-LRD0KNHxbyMAg017gs2a~xyIEXXcEj-o_T7BgWolC5HozVkS9vpm0VZ29qM1thjcz-qYtQT7BzxpTGtHFOpPKcIXM1ND9W_wS61IoWUsi5qDCdlR56YPEEL7OO4JDjQbaU7Hmgs56hJtej9RC_Q20YSL3Z4zn8uS9xgVaeoukzqw;unionwsws={\"devicefinger\":\"eidA8c018120f0s987dfa2T7Ryic3EE7qC79iPO3YPFRMNERKYAqeXYR\/x6iNzzR3QwdGkQ31KgUPRWHuDWGCmZ89loxDaeq3NfkVK4cD53vUEfAaNx5\",\"jmafinger\":\"JD012145b9og90YffWQy167576697020804Dp7o5L_UafLaZKljjsjmQIZZBMhBuEgjv9HV6rNtpESqMLQMeKwROGU0qVbFLmjlULsJvk_m-LRD0KNHxbyMAg017gs2a~xyIEXXcEj-o_T7BgWolC5HozVkS9vpm0VZ29qM1thjcz-qYtQT7BzxpTGtHFOpPKcIXM1ND9W_wS61IoWUsi5qDCdlR56YPEEL7OO4JDjQbaU7Hmgs56hJtej9RC_Q20YSL3Z4zn8uS9xgVaeoukzqw\"};"
+    ws = ""
     return_ws = getToken(ws)
     print(return_ws)
-
-    # port = check_port()  # 调用方法 [check_port]  并赋值 [port]
-    # ql_url = 'http://127.0.0.1:{0}/'.format(port)
-    # token = ql_login()  # 调用方法 [ql_login]  并赋值 [token]
-    # s = requests.session()  # 设置 request session方法
-    # s.headers.update({"authorization": "Bearer " + str(token)})  # 增加 HTTP头认证
-    # s.headers.update({"Content-Type": "application/json;charset=UTF-8"})  # 增加 HTTP头 json 类型
-    # ql_id = check_id()  # 调用方法 [check_id] 并赋值 [ql_id]
-    # url_t = check_cloud()  # 调用方法 [check_cloud] 并赋值 [url_t]
-    # cloud_arg = cloud_info()  # 调用方法 [cloud_info] 并赋值 [cloud_arg]
-    # update()  # 调用方法 [update]
-    # ua = cloud_arg['User-Agent']  # 设置全局变量 UA
-    # wslist = get_wskey()  # 调用方法 [get_wskey] 并赋值 [wslist]
-    # envlist = get_env()  # 调用方法 [get_env] 并赋值 [envlist]
-    # if "WSKEY_SLEEP" in os.environ and str(os.environ["WSKEY_SLEEP"]).isdigit():  # 判断变量[WSKEY_SLEEP]是否为数字类型
-    #     sleepTime = int(os.environ["WSKEY_SLEEP"])  # 获取变量 [int]
-    # else:  # 判断分支
-    #     sleepTime = 10  # 默认休眠时间 10秒
-    # for ws in wslist:  # wslist变量 for循环  [wslist -> ws]
-    #     wspin = ws.split(";")[0]  # 变量分割 ;
-    #     if "pin" in wspin:  # 判断 pin 是否存在于 [wspin]
-    #         wspin = "pt_" + wspin + ";"  # 封闭变量
-    #         return_serch = serch_ck(wspin)  # 变量 pt_pin 搜索获取 key eid
-    #         if return_serch[0]:  # bool: True 搜索到账号
-    #             jck = str(return_serch[1])  # 拿到 JD_COOKIE
-    #             if not check_ck(jck):  # bool: False 判定 JD_COOKIE 有效性
-    #                 tryCount = 1  # 重试次数 1次
-    #                 if "WSKEY_TRY_COUNT" in os.environ:  # 判断 [WSKEY_TRY_COUNT] 是否存在于系统变量
-    #                     if os.environ["WSKEY_TRY_COUNT"].isdigit():  # 判断 [WSKEY_TRY_COUNT] 是否为数字
-    #                         tryCount = int(os.environ["WSKEY_TRY_COUNT"])  # 设置 [tryCount] int
-    #                 for count in range(tryCount):  # for循环 [tryCount]
-    #                     count += 1  # 自增
-    #                     return_ws = getToken(ws)  # 使用 WSKEY 请求获取 JD_COOKIE bool jd_ck
-    #                     if return_ws[0]:  # 判断 [return_ws]返回值 Bool类型
-    #                         break  # 中断循环
-    #                     if count < tryCount:  # 判断循环次
-    #                         print("{0} 秒后重试，剩余次数：{1}\n".format(sleepTime, tryCount - count))  # 标准日志输出
-    #                         time.sleep(sleepTime)  # 脚本休眠 使用变量 [sleepTime]
-    #                 if return_ws[0]:  # 判断 [return_ws]返回值 Bool类型
-    #                     nt_key = str(return_ws[1])  # 从 return_ws[1] 取出 -> nt_key
-    #                     # print("wskey转pt_key成功", nt_key)  # 标准日志输出 [未启用]
-    #                     print("wskey转换成功")  # 标准日志输出
-    #                     eid = return_serch[2]  # 从 return_serch 拿到 eid
-    #                     ql_update(eid, nt_key)  # 函数 ql_update 参数 eid JD_COOKIE
-    #                 else:  # 判断分支
-    #                     if "WSKEY_AUTO_DISABLE" in os.environ:  # 从系统变量中获取 WSKEY_AUTO_DISABLE
-    #                         print(str(wspin) + "账号失效")  # 标准日志输出
-    #                         text = "账号: {0} WsKey疑似失效".format(wspin)  # 设置推送内容
-    #                     else:  # 判断分支
-    #                         eid = return_serch[2]  # 读取 return_serch[2] -> eid
-    #                         print(str(wspin) + "账号禁用")  # 标准日志输出
-    #                         ql_disable(eid)  # 执行方法[ql_disable] 传递 eid
-    #                         text = "账号: {0} WsKey疑似失效, 已禁用Cookie".format(wspin)  # 设置推送内容
-    #                         ql_send(text)
-    #             else:  # 判断分支
-    #                 print(str(wspin) + "账号有效")  # 标准日志输出
-    #                 eid = return_serch[2]  # 读取 return_serch[2] -> eid
-    #                 ql_enable(eid)  # 执行方法[ql_enable] 传递 eid
-    #                 print("--------------------\n")  # 标准日志输出
-    #         else:  # 判断分支
-    #             print("\n新wskey\n")  # 标准日志分支
-    #             return_ws = getToken(ws)  # 使用 WSKEY 请求获取 JD_COOKIE bool jd_ck
-    #             if return_ws[0]:  # 判断 (return_ws[0]) 类型: [Bool]
-    #                 nt_key = str(return_ws[1])  # return_ws[1] -> nt_key
-    #                 print("wskey转换成功\n")  # 标准日志输出
-    #                 ql_insert(nt_key)  # 调用方法 [ql_insert]
-    #         print("暂停{0}秒\n".format(sleepTime))  # 标准日志输出
-    #         time.sleep(sleepTime)  # 脚本休眠
-    #     else:  # 判断分支
-    #         print("WSKEY格式错误\n--------------------\n")  # 标准日志输出
-    # print("执行完成\n--------------------")  # 标准日志输出
-    # sys.exit(0)  # 脚本退出
-    # # Enjoy
