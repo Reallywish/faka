@@ -1,10 +1,15 @@
-# coding=utf-8
+# -*- coding:utf-8-*-
+import os
+
+import configparser
 import requests
 import json
 import time
 from bs4 import BeautifulSoup
 import pandas
 import csv
+
+from past.builtins import raw_input
 
 
 # def changeProxies(proxy_url):
@@ -36,15 +41,16 @@ def changeProxies(proxy_url):
         while True:
             try:
                 ret = requests.get(proxy_url)
+                print(ret)
                 break
             except:
                 continue
-    while json.loads(ret.text)['code'] != 200:
+    while (json.loads(ret.text)['code'] != 200 and json.loads(ret.text)['code'] != 0):
         time.sleep(1)
         return changeProxies(proxy_url)
     data = json.loads(ret.text)['data'][0]
     proxies = {"https": f"{data['ip']}:{data['port']}"}
-    print('--->代理IP:', ret.text)
+    print('代理接口返回的ip====>>>>>:', ret.text)
     return proxies
 
 
@@ -71,12 +77,16 @@ class Spider():
         }
         try:
             ret = requests.get(url, headers=headers, proxies=self.proxies, verify=False, timeout=10)
-        except:
+        except Exception as err:
+            print(err)
             return True
         if '继续' in ret.text:
             return True
         if '在线验证报告已过期，无法在线验证。' in ret.text:
-            self.saveData([code, '', '', '', '闭码'])
+            self.saveData([code, '', '', '', '', '闭码'])
+            return False
+        if '在线验证报告已关闭，无法在线验证。' in ret.text:
+            self.saveData([code, '', '', '', '', '闭码'])
             return False
         soup = BeautifulSoup(ret.text, 'html.parser')
         try:
@@ -119,21 +129,59 @@ class Spider():
         f.close()
 
 
-if __name__ == '__main__':
+def start(proxy_url):
     s = Spider()
-    """熊猫代理参数"""
-    # secret = '0a669c9ff901cb72d4ad4e3438f1b036'
-    # orderNo = 'GL20191206115727PPFPSsMm'
-    # proxy_url = f'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret={secret}&orderNo={orderNo}&count=1&isTxt=0&proxyType=1'
-
-    """品易代理参数"""
-    # neek = '65794'
-    # proxy_url = f'http://tiqu.pyhttp.taolop.com/getflowip?count=1&neek={neek}&type=2&sep=4&sb=&ip_si=1&mr=0'
-    # 小象代理
-    proxy_url = 'https://api.xiaoxiangdaili.com/ip/get?appKey=949648503121268736&appSecret=jPYNMXeM&cnt=&wt=json'
     for code in s.df.readlines():
         while s.getHtml(code.strip()):
             time.sleep(3)
             s.proxies = changeProxies(proxy_url)
     newdf = pandas.read_csv('tmp.csv')
-    newdf.to_excel('结果.xlsx', index=None)
+    newdf.to_excel('result.xlsx', index=None)
+    os.remove('tmp.csv')
+
+
+def main():
+    configFile = "./school.ini"
+    config = configparser.ConfigParser()
+
+    if os.path.exists(configFile):
+        status = raw_input(
+            "使用品易代理请输入1，使用小象代理请输入2，请确保配置文件已添加相关配置！！！======>>")
+        config.read(configFile)
+
+        """熊猫代理参数"""
+        # secret = '0a669c9ff901cb72d4ad4e3438f1b036'
+        # orderNo = 'GL20191206115727PPFPSsMm'
+        # proxy_url = f'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret={secret}&orderNo={orderNo}&count=1&isTxt=0&proxyType=1'
+
+        if status == "1":
+            """品易代理参数"""
+            neek = config.get("pinyi", "neek")
+            proxy_url = f'http://tiqu.pyhttp.taolop.com/getflowip?count=1&neek={neek}&type=2&sep=4&sb=&ip_si=1&mr=0'
+            start(proxy_url)
+        elif status == "2":
+            """小象代理参数"""
+            appKey = config.get("elephant", "appkey")
+            appSecret = config.get("elephant", "appSecret")
+            proxy_url = f'https://api.xiaoxiangdaili.com/ip/get?appKey={appKey}&appSecret={appSecret}&cnt=&wt=json'
+            start(proxy_url)
+        else:
+            input("请按要求输入！！！")
+
+
+    else:
+        config['elephant'] = {
+            'appKey': '',
+            'appSecret': ''
+        }
+        config['pinyi'] = {
+            'neek': ''
+        }
+        with open('./school.ini', 'w') as cfg:
+            config.write(cfg)
+        print("配置文件已生成，请填入对应信息，重启该程序")
+        input("回车结束~~~~")
+
+
+if __name__ == '__main__':
+    main()
