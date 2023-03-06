@@ -159,12 +159,14 @@ def main():
             neek = config.get("pinyi", "neek")
             proxy_url = f'http://tiqu.pyhttp.taolop.com/getflowip?count=1&neek={neek}&type=2&sep=4&sb=&ip_si=1&mr=0'
             start(proxy_url)
+            input("执行完毕，请按回车结束···")
         elif status == "2":
             """小象代理参数"""
             appKey = config.get("elephant", "appkey")
             appSecret = config.get("elephant", "appSecret")
             proxy_url = f'https://api.xiaoxiangdaili.com/ip/get?appKey={appKey}&appSecret={appSecret}&cnt=&wt=json'
             start(proxy_url)
+            input("执行完毕，请按回车结束···")
         else:
             input("请按要求输入！！！")
 
