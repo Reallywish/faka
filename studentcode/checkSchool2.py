@@ -45,12 +45,12 @@ def changeProxies(proxy_url):
                 break
             except:
                 continue
+    print('代理接口返回的ip====>>>>>:', ret.text)
     while (json.loads(ret.text)['code'] != 200 and json.loads(ret.text)['code'] != 0):
         time.sleep(1)
         return changeProxies(proxy_url)
     data = json.loads(ret.text)['data'][0]
     proxies = {"https": f"{data['ip']}:{data['port']}"}
-    print('代理接口返回的ip====>>>>>:', ret.text)
     return proxies
 
 
