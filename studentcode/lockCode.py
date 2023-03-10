@@ -180,7 +180,7 @@ def main():
 
 if __name__ == '__main__':
     try:
-        tmp = raw_input("输入1检测cookie是否有绑定，输入2 进行解绑，输入3进行锁码：===> ")
+        tmp = raw_input("输入1检测cookie是否有绑定，输入2 进行解绑，输入3进行锁码，输入4：===> ")
         if tmp == "1":
             get_record()
             input('按回车结束本程序！！！！！！！！')
