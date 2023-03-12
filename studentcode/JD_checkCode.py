@@ -1,9 +1,11 @@
 # -*- coding:utf-8 -*-
 import sys
+import time
 
 import requests
 import simplejson as json
 import logging
+import random
 
 logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
                     level=logging.INFO)
@@ -33,44 +35,42 @@ def crearte_auth(id, cookie):
     session = requests.Session()
     session.trust_env = False
     response = session.request("GET", url, headers=headers, data=payload)
-    print(response.text)
+    print("解码：" + response.text)
 
 
-def get_record(status="check"):
-    cookies = open("./cookie.ini", "r").readlines()
-    for cookie in cookies:
-        url = "https://edu-web.jd.com/app/myRecord?applyStatus=PASS&brand=apple"
-        payload = {}
-        headers = {
-            'authority': 'edu-web.jd.com',
-            'accept': '*/*',
-            'accept-language': 'zh,zh-CN;q=0.9',
-            'cookie': cookie.replace("\n", ""),
-            'referer': 'https://edu-home.jd.com/',
-            'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
-            'sec-ch-ua-mobile': '?0',
-            'sec-ch-ua-platform': '"Windows"',
-            'sec-fetch-dest': 'script',
-            'sec-fetch-mode': 'no-cors',
-            'sec-fetch-site': 'same-site',
-            'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
-        }
-        try:
-            session = requests.Session()
-            session.trust_env = False
-            response = session.request("GET", url, headers=headers, data=payload).json()
-            # print(response.json())
-            print(cookie.replace("\n", ""))
-            for data in response["data"]:
-                print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(
-                    data["xxxCheckCode"]) + "  验证时间：" + str(data[
-                                                                "startTime"]) + "  失效时间：" + str(
-                    data["endTime"]))
-                if status != "check":
-                    crearte_auth(int(data["id"]) - 1, cookie.replace("\n", ""))
-        except:
-            print(cookie.replace("\n", "") + "       EROOR!!!!  =====> 该cookie 可能已经失效！请验证")
-            input("结束······")
+def get_record(cookie, status="check"):
+    # cookies = open("./cookie.ini", "r").readlines()
+    url = "https://edu-web.jd.com/app/myRecord?applyStatus=PASS&brand=apple"
+    payload = {}
+    headers = {
+        'authority': 'edu-web.jd.com',
+        'accept': '*/*',
+        'accept-language': 'zh,zh-CN;q=0.9',
+        'cookie': cookie.strip(),
+        'referer': 'https://edu-home.jd.com/',
+        'sec-ch-ua': '"Not_A Brand";v="99", "Google Chrome";v="109", "Chromium";v="109"',
+        'sec-ch-ua-mobile': '?0',
+        'sec-ch-ua-platform': '"Windows"',
+        'sec-fetch-dest': 'script',
+        'sec-fetch-mode': 'no-cors',
+        'sec-fetch-site': 'same-site',
+        'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36'
+    }
+    try:
+        session = requests.Session()
+        session.trust_env = False
+        response = session.request("GET", url, headers=headers, data=payload).json()
+        print("获取码结果：" + str(response))
+        for data in response["data"]:
+            print("id: " + str(data["id"]) + "  名称：" + str(data["skuName"]) + "  学信码：" + str(
+                data["xxxCheckCode"]) + "  验证时间：" + str(data[
+                                                            "startTime"]) + "  失效时间：" + str(
+                data["endTime"]))
+            if status != "check":
+                crearte_auth(int(data["id"]) - 1, cookie.strip())
+    except:
+        print(cookie.replace("\n", "") + "       EROOR!!!!  =====> 该cookie 可能已经失效！请验证")
+        input("结束······")
 
 
 def getIpadcheck(studentCode, auth):
@@ -91,6 +91,7 @@ def getIpadcheck(studentCode, auth):
     session.trust_env = False
     try:
         response = session.request("POST", url, headers=headers, data=payload).json()
+        print("验证平板结果：" + str(response))
     except:
         response = "false"
 
@@ -123,13 +124,15 @@ def lock(studentCode, cookie, auth, skuId="100019718287"):
     session.trust_env = False
     response = session.request("GET", url, headers=json.loads(json.dumps(headers)), data=payload).text
     # response = "s"
-    logging.info(studentCode + "使用 " + str(skuId) + "   验证结果========> " + str(response))
+    print("锁码验证结果========> " + str(response))
     if "成功" in str(response):
         # 若成功，则解，说明是爽
-        get_record("1")
+        time.sleep(1)
+        get_record(cookie, "1")
         double.append(studentCode)
         return True
-    elif "redirect" in str(response):
+    elif "redirect" in str(response) or "命中防刷逻辑" in str(response):
+        print("这块返回了false" + str(response))
         return False
     elif "超时" in str(response):
         lock(studentCode, cookie, auth, skuId)
@@ -141,15 +144,24 @@ def lock(studentCode, cookie, auth, skuId="100019718287"):
 
 if __name__ == '__main__':
     auth = open("./auth.ini", "r").readline().strip()
-    cookie = open("./cookie.ini", "r").readline().strip()
+    cookies = open("./cookie.ini", "r").readlines()
 
     lines = open("studentcode", "r").readlines()
-    for line in lines:
-        print(line.strip())
-        if not lock(line.strip(), cookie, auth):
-            print("cookie 可能有问题···")
-            break
-
+    for line, cookie in zip(lines, cookies):
+        try:
+            print(line.strip(), cookie.strip())
+            suiji = random.randint(1, 5)
+            print(f"开始随机延迟，本次延迟{suiji}秒，否则担心触碰防刷~~~~")
+            time.sleep(suiji)
+            # print(line.strip())
+            if not lock(line.strip(), cookie.strip(), auth):
+                print("cookie 可能有问题···")
+                break
+            else:
+                print("无问题")
+            cookies.append(cookie)
+        except:
+            print("出问题了！")
     print("--------------------------双次码-----------------------------")
     print("\r\n".join(double))
     print("--------------------------单次码-----------------------------")
