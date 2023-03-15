@@ -145,13 +145,13 @@ class check:
         except:
             response = "false"
         if status == 1:
-            if "True" in str(response):
+            if "true" in str(response):
                 # print(self.studentCode)
                 codeok.append(self.studentCode + "\r")
             else:
                 codeerr.append(self.studentCode + "\r")
         elif status == 2:
-            if "True" not in str(response):
+            if "true" not in str(response):
                 print(self.studentCode)
         else:
             print(self.studentCode + "   结果：" + str(response))
