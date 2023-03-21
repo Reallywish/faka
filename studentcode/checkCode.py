@@ -26,6 +26,8 @@ urllib3.disable_warnings()
 
 codeok = []
 codeerr = []
+codeMac = []
+codeIpad = []
 
 
 class check:
@@ -77,6 +79,7 @@ class check:
         session.trust_env = False
         try:
             response = session.request("POST", url, headers=headers, data=payload).json()
+            print(response)
         except:
             response = "false"
         if status == 1:
@@ -120,6 +123,46 @@ class check:
                 print(self.studentCode)
         else:
             print(self.studentCode + "   结果：" + str(response))
+
+    def getIpadAndMac(self, status='0'):
+        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+
+        if status == '1':
+            payloadIpad = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=2754&edu_param=FY23Q2Q3M4MProgram&items%5B0%5D%5Borigin_bn%5D=MNXD3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1381&items%5B0%5D%5Bitem_name%5D=iPad%20Pro%2011%20%E8%8B%B1%E5%AF%B8%EF%BC%88%E6%96%B0%E6%AC%BE%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1381'
+            payloadMac = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=3539&edu_param=FY23Q2Q3M4MProgram&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20(M2)&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028'
+        else:
+            payloadIpad = f'company_id=1&xxw_check_code={self.studentCode.strip()}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
+            payloadMac = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028".format(
+                code=self.studentCode.strip())
+
+        headers = {
+            'Host': 'aar-orderapi.tjtjshengtu.com',
+            'Authorization': self.auth,
+            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
+            'authorizer-appid': 'wxd2678c430bfd3abc',
+            'content-type': 'application/x-www-form-urlencoded',
+            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
+        }
+
+        session = requests.Session()
+        session.trust_env = False
+        try:
+            responseIpad = session.request("POST", url, headers=headers, data=payloadIpad).json()
+            responseMac = session.request("POST", url, headers=headers, data=payloadMac).json()
+            # print(responseIpad)
+            # print(responseMac)
+        except:
+            responseIpad = "false"
+            responseMac = "false"
+
+        if "True" in str(responseIpad) and "True" in str(responseMac):
+            codeok.append(self.studentCode.strip())
+        elif "True" not in str(responseIpad) and "True" in str(responseMac):
+            codeMac.append(self.studentCode.strip())
+        elif "True" in str(responseIpad) and "True" not in str(responseMac):
+            codeIpad.append(self.studentCode.strip())
+        else:
+            codeerr.append(self.studentCode.strip())
 
     def getIpadHotcheck(self, status=0):
 
@@ -323,15 +366,16 @@ if __name__ == '__main__':
 检测mac结果直接输出请输入2
 输入3将IPAD总结输出
 输入4将MAC总结输出
-输入5将手表总结输出
-输入6将ipad和mac都检测
-输入7将活动码输出
-输入8将活动码批量输出
-输入9将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
+输入5检测Mac和Ipad，结果输出到控制台
+输入6检测Mac和Ipad，只将结果输出到控制
+输入7将活动码每个结果输出到控制台
+输入8将活动码批量检测结果输出到控制台(只检测平板）
+输入9将活动码和电脑活动码检测结果输出到控制台
+输入10将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
 请按要求输入：=======>""")
 
         f = open("studentcode", "r")
-        if tmp == "1" or tmp == "2" or tmp == "6":
+        if tmp == "1" or tmp == "2" or tmp == "5":
             for l in f.readlines():
                 code = l.strip()
                 if tmp == "1":
@@ -356,16 +400,23 @@ if __name__ == '__main__':
             print("------------------可用码------------------")
             for a in codeok:
                 print(a)
-        if tmp == '5':
+        if tmp == '6':
             for l in tqdm(f.readlines()):
                 code = l.strip()
-                check(code).getWatchCheck(1)
-            print("------------------不可用码------------------")
+                check(code).getIpadAndMac()
+
+            print("------------------全部都不可用码------------------")
             for b in codeerr:
                 print(b)
-            print("------------------可用码------------------")
-            for a in codeok:
+            print("------------------只有电脑可用码------------------")
+            for d in codeMac:
+                print(d)
+            print("------------------只有平板可用码------------------")
+            for a in codeIpad:
                 print(a)
+            print("--------------------全部可用码-------------------")
+            for c in codeok:
+                print(c)
 
         if tmp == '7':
             for l in f.readlines():
@@ -379,7 +430,24 @@ if __name__ == '__main__':
             print("------------------可用码------------------")
             for a in codeok:
                 print(a)
-        if tmp == '9':
+        if tmp == "9":
+            for l in tqdm(f.readlines()):
+                code = l.strip()
+                check(code).getIpadAndMac("1")
+
+            print("------------------全部都不可用码------------------")
+            for b in codeerr:
+                print(b)
+            print("------------------只有电脑可用码------------------")
+            for d in codeMac:
+                print(d)
+            print("------------------只有平板可用码------------------")
+            for a in codeIpad:
+                print(a)
+            print("--------------------全部可用码-------------------")
+            for c in codeok:
+                print(c)
+        if tmp == '10':
             checkSchoolStart()
 
         input("按回车关闭。。。。")
