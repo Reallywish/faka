@@ -185,13 +185,8 @@ if __name__ == '__main__':
                 lines.append(line.strip())
 
 
-
-
-
-
-
         except:
-            print("程序出错，请联系开发者！！！")
+            input("程序出错，请联系开发者！！！")
 
     print("--------------------------坏  码-------------------------------------")
     print("\r\n".join(badCode))
@@ -203,3 +198,5 @@ if __name__ == '__main__':
     print("\r\n".join(doubleCode))
     print("--------------------------未解锁cookie--------------------------------")
     print("\r\n".join(noLockCookie))
+
+    input("运行结束，按回车关闭！！！")

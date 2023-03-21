@@ -90,8 +90,10 @@ class check:
     def getIpadcheck(self, status=0):
         url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
 
-        payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MM9F3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=899&items%5B0%5D%5Bitem_name%5D=iPad%20Air%EF%BC%88%E7%AC%AC%E4%BA%94%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=899".format(
-            code=self.studentCode)
+        # payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MM9F3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=899&items%5B0%5D%5Bitem_name%5D=iPad%20Air%EF%BC%88%E7%AC%AC%E4%BA%94%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=899".format(
+        #     code=self.studentCode)
+        payload = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
+
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
             'Authorization': self.auth,
@@ -240,6 +242,7 @@ def changeProxies(proxy_url):
     """
     try:
         ret = requests.get(proxy_url)
+        print('代理接口返回的ip====>>>>>:', ret.text)
     except:
         while True:
             try:
@@ -253,7 +256,6 @@ def changeProxies(proxy_url):
         return changeProxies(proxy_url)
     data = json.loads(ret.text)['data'][0]
     proxies = {"https": f"{data['ip']}:{data['port']}"}
-    print('代理接口返回的ip====>>>>>:', ret.text)
     return proxies
 
 
@@ -378,7 +380,6 @@ if __name__ == '__main__':
             for a in codeok:
                 print(a)
         if tmp == '9':
-            # print("待更新！")
             checkSchoolStart()
 
         input("按回车关闭。。。。")
