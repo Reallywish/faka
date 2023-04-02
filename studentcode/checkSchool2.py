@@ -132,9 +132,10 @@ class Spider():
 def start(proxy_url):
     s = Spider()
     for code in s.df.readlines():
-        while s.getHtml(code.strip()):
-            time.sleep(3)
-            s.proxies = changeProxies(proxy_url)
+        if len(code.strip()) ==16:
+            while s.getHtml(code.strip()):
+                time.sleep(3)
+                s.proxies = changeProxies(proxy_url)
     newdf = pandas.read_csv('tmp.csv')
     newdf.to_excel('result.xlsx', index=None)
     os.remove('tmp.csv')

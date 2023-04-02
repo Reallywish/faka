@@ -126,7 +126,7 @@ class check:
 
     def getIpadAndMac(self, status='0'):
         # url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
-        url ="https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         if status == '1':
             payloadIpad = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=2754&edu_param=FY23Q2Q3M4MProgram&items%5B0%5D%5Borigin_bn%5D=MNXD3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1381&items%5B0%5D%5Bitem_name%5D=iPad%20Pro%2011%20%E8%8B%B1%E5%AF%B8%EF%BC%88%E6%96%B0%E6%AC%BE%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1381'
@@ -305,9 +305,10 @@ def changeProxies(proxy_url):
 def start(proxy_url):
     s = Spider()
     for code in s.df.readlines():
-        while s.getHtml(code.strip()):
-            time.sleep(3)
-            s.proxies = changeProxies(proxy_url)
+        if len(code.strip()) == 16:
+            while s.getHtml(code.strip()):
+                time.sleep(3)
+                s.proxies = changeProxies(proxy_url)
     newdf = pandas.read_csv('tmp.csv')
     newdf.to_excel('result.xlsx', index=None)
     os.remove('tmp.csv')
