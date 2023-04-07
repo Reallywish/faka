@@ -36,7 +36,7 @@ class check:
         self.auth = open("./auth.ini", "r").readline()
 
     def getMaccheck(self, status=0):
-        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028".format(
             code=self.studentCode)
@@ -64,7 +64,7 @@ class check:
             print(self.studentCode + "   结果：" + str(response))
 
     def getWatchCheck(self, status):
-        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         payload = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=3337&edu_param=&items%5B0%5D%5Borigin_bn%5D=MNHW3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1448&items%5B0%5D%5Bitem_name%5D=Apple%20Watch%20Series%208%EF%BC%88GPS%2B%E8%9C%82%E7%AA%9D%E7%BD%91%E7%BB%9C%EF%BC%89%E9%93%9D%E9%87%91%E5%B1%9E%E8%A1%A8%E5%A3%B3%20-%20%E5%AD%A6%E7%94%9F%E9%99%90%E6%97%B6%E4%B8%93%E4%BA%AB&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1448'
         headers = {
@@ -91,7 +91,7 @@ class check:
             print(self.studentCode + "   结果：" + str(response))
 
     def getIpadcheck(self, status=0):
-        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         # payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MM9F3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=899&items%5B0%5D%5Bitem_name%5D=iPad%20Air%EF%BC%88%E7%AC%AC%E4%BA%94%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=899".format(
         #     code=self.studentCode)
