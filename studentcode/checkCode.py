@@ -209,7 +209,7 @@ class Spider():
         c.writerow(['验证码', '姓名', '学校', '在线验证码', '更新日期', '是否闭码'])
         f.close()
 
-        self.df = open("./studentcode", "r")
+        self.df = open("./studentcode", "r",encoding='utf-8-sig')
 
         self.proxies = None
 
