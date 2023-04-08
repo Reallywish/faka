@@ -223,8 +223,11 @@ class Spider():
         headers = {
             'user-agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.45 Safari/537.36'
         }
+        s = requests.session()
+        s.keep_alive = False
         try:
-            ret = requests.get(url, headers=headers, proxies=self.proxies, verify=False, timeout=10)
+            ret = s.request("GET", url, headers=headers, proxies=self.proxies, verify=False, timeout=10)
+            # ret = requests.get(url, headers=headers, proxies=self.proxies, verify=False, timeout=10)
         except Exception as err:
             print(err)
             return True
