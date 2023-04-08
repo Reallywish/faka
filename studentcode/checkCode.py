@@ -378,7 +378,7 @@ if __name__ == '__main__':
 输入10将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
 请按要求输入：=======>""")
 
-        f = open("studentcode", "r")
+        f = open("studentcode", "r", encoding='utf-8')
         if tmp == "1" or tmp == "2" or tmp == "5":
             for l in f.readlines():
                 code = l.strip()
@@ -453,7 +453,7 @@ if __name__ == '__main__':
                 print(c)
         if tmp == '10':
             checkSchoolStart()
-
         input("按回车关闭。。。。")
-    except:
+    except Exception as e:
+        print(e)
         input("按回车键关闭。。。")
