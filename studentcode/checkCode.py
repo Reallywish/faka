@@ -33,7 +33,7 @@ codeIpad = []
 class check:
     def __init__(self, studentCode):
         self.studentCode = studentCode
-        self.auth = open("./auth.ini", "r").readline()
+        self.auth = open("./auth.ini", "r",encoding='utf-8-sig').readline()
 
     def getMaccheck(self, status=0):
         url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
@@ -294,7 +294,7 @@ def checkSchoolStart():
         config['pinyi'] = {
             'neek': ''
         }
-        with open('./school.ini', 'w') as cfg:
+        with open('./school.ini', 'w',encoding='utf-8-sig') as cfg:
             config.write(cfg)
         print("配置文件已生成，请填入对应信息，重启该程序")
         # input("回车结束~~~~")
