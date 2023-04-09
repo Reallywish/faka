@@ -63,33 +63,6 @@ class check:
         else:
             print(self.studentCode + "   结果：" + str(response))
 
-    def getWatchCheck(self, status):
-        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
-
-        payload = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=3337&edu_param=&items%5B0%5D%5Borigin_bn%5D=MNHW3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1448&items%5B0%5D%5Bitem_name%5D=Apple%20Watch%20Series%208%EF%BC%88GPS%2B%E8%9C%82%E7%AA%9D%E7%BD%91%E7%BB%9C%EF%BC%89%E9%93%9D%E9%87%91%E5%B1%9E%E8%A1%A8%E5%A3%B3%20-%20%E5%AD%A6%E7%94%9F%E9%99%90%E6%97%B6%E4%B8%93%E4%BA%AB&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1448'
-        headers = {
-            'Host': 'aar-orderapi.tjtjshengtu.com',
-            'Authorization': self.auth,
-            'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
-            'authorizer-appid': 'wxd2678c430bfd3abc',
-            'content-type': 'application/x-www-form-urlencoded',
-            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
-        }
-        session = requests.Session()
-        session.trust_env = False
-        try:
-            response = session.request("POST", url, headers=headers, data=payload).json()
-            print(response)
-        except:
-            response = "false"
-        if status == 1:
-            if "True" in str(response):
-                codeok.append(self.studentCode + "\r")
-            else:
-                codeerr.append(self.studentCode + "\r")
-        else:
-            print(self.studentCode + "   结果：" + str(response))
-
     def getIpadcheck(self, status=0):
         url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
@@ -164,43 +137,6 @@ class check:
         else:
             codeerr.append(self.studentCode.strip())
 
-    def getIpadHotcheck(self, status=0):
-
-        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
-
-        payload = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=2754&edu_param=FY23Q2Q3M4MProgram&items%5B0%5D%5Borigin_bn%5D=MNXD3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1381&items%5B0%5D%5Bitem_name%5D=iPad%20Pro%2011%20%E8%8B%B1%E5%AF%B8%EF%BC%88%E6%96%B0%E6%AC%BE%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1381'
-        headers = {
-            'Host': 'aar-orderapi.tjtjshengtu.com',
-            'Connection': 'keep-alive',
-            'Content-Length': '353',
-            'authorization': 'Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6IjQyNTAxMDBfZXNwaWVyX29adEdONU1yWTR3d1BVTWotTXFjcW9WM284OG9fZXNwaWVyX29adEdONU1yWTR3d1BVTWotTXFjcW9WM284OG8iLCJzdWIiOiI0MjUwMTAwX2VzcGllcl9vWnRHTjVNclk0d3dQVU1qLU1xY3FvVjNvODhvX2VzcGllcl9vWnRHTjVNclk0d3dQVU1qLU1xY3FvVjNvODhvIiwidXNlcl9pZCI6NDI1MDEwMCwiZGlzYWJsZWQiOjAsImNvbXBhbnlfaWQiOiIxIiwid3hhcHBfYXBwaWQiOiJ3eGQyNjc4YzQzMGJmZDNhYmMiLCJ3b2FfYXBwaWQiOiJ3eGQyNjc4YzQzMGJmZDNhYmMiLCJ1bmlvbmlkIjoib1p0R041TXJZNHd3UFVNai1NcWNxb1Yzbzg4byIsIm9wZW5pZCI6Im9adEdONU1yWTR3d1BVTWotTXFjcW9WM284OG8iLCJhdXRob3JpemVyX2FwcGlkIjoid3hkMjY3OGM0MzBiZmQzYWJjIiwib3BlcmF0b3JfdHlwZSI6InVzZXIifQ.p7oz79OTmo0q_H33tY9jD8_3KiH29CcaqU3lgKqS6VE',
-            'charset': 'utf-8',
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 12; ONEPLUS A5010 Build/SQ3A.220705.004; wv) AppleWebKit/537.36 (KHTML, like Gecko) Version/4.0 Chrome/107.0.5304.141 Mobile Safari/537.36 XWEB/5015 MMWEBSDK/20221206 MMWEBID/1054 MicroMessenger/8.0.32.2300(0x28002035) WeChat/arm64 Weixin NetType/4G Language/zh_CN ABI/arm64 MiniProgramEnv/android',
-            'content-type': 'application/x-www-form-urlencoded',
-            'authorizer-appid': 'wxd2678c430bfd3abc',
-            'Accept-Encoding': 'gzip,compress,br,deflate',
-            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/91/page-frame.html',
-            'Cookie': 'acw_tc=276077a216785479397647532e5a082ec824a6562a8856e03dd54e921e1a1d'
-        }
-
-        session = requests.Session()
-        session.trust_env = False
-        try:
-            response = session.request("POST", url, headers=headers, data=payload).text
-        except:
-            response = "false"
-        if status == 1:
-            if "true" in str(response):
-                # print(self.studentCode)
-                codeok.append(self.studentCode + "\r")
-            else:
-                codeerr.append(self.studentCode + "\r")
-        elif status == 2:
-            if "true" not in str(response):
-                print(self.studentCode)
-        else:
-            print(self.studentCode + "   结果：" + str(response))
-
 
 class Spider():
     def __init__(self):
@@ -209,7 +145,7 @@ class Spider():
         c.writerow(['验证码', '姓名', '学校', '在线验证码', '更新日期', '是否闭码'])
         f.close()
 
-        self.df = open("./studentcode", "r",encoding='utf-8-sig')
+        self.df = open("./studentcode", "r", encoding='utf-8-sig')
 
         self.proxies = None
 
@@ -290,12 +226,14 @@ def changeProxies(proxy_url):
         ret = requests.get(proxy_url)
         print('代理接口返回的ip====>>>>>:', ret.text)
     except:
+        print("获取代理ip出错··")
         while True:
             try:
                 ret = requests.get(proxy_url)
                 print(ret)
                 break
             except:
+                print("获取代理ip循环内出错~！！！")
                 continue
     while (json.loads(ret.text)['code'] != 200 and json.loads(ret.text)['code'] != 0):
         time.sleep(1)
@@ -372,10 +310,7 @@ if __name__ == '__main__':
 输入4将MAC总结输出
 输入5检测Mac和Ipad，结果输出到控制台
 输入6检测Mac和Ipad，只将结果输出到控制
-输入7将活动码每个结果输出到控制台
-输入8将活动码批量检测结果输出到控制台(只检测平板）
-输入9将活动码和电脑活动码检测结果输出到控制台
-输入10将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
+输入7将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
 请按要求输入：=======>""")
 
         f = open("studentcode", "r", encoding='utf-8')
@@ -404,54 +339,7 @@ if __name__ == '__main__':
             print("------------------可用码------------------")
             for a in codeok:
                 print(a)
-        if tmp == '6':
-            for l in tqdm(f.readlines()):
-                code = l.strip()
-                check(code).getIpadAndMac()
-
-            print("------------------全部都不可用码------------------")
-            for b in codeerr:
-                print(b)
-            print("------------------只有电脑可用码------------------")
-            for d in codeMac:
-                print(d)
-            print("------------------只有平板可用码------------------")
-            for a in codeIpad:
-                print(a)
-            print("--------------------全部可用码-------------------")
-            for c in codeok:
-                print(c)
-
         if tmp == '7':
-            for l in f.readlines():
-                check(l.strip()).getIpadHotcheck()
-        if tmp == '8':
-            for l in tqdm(f.readlines()):
-                check(l.strip()).getIpadHotcheck(1)
-            print("------------------不可用码------------------")
-            for b in codeerr:
-                print(b)
-            print("------------------可用码------------------")
-            for a in codeok:
-                print(a)
-        if tmp == "9":
-            for l in tqdm(f.readlines()):
-                code = l.strip()
-                check(code).getIpadAndMac("1")
-
-            print("------------------全部都不可用码------------------")
-            for b in codeerr:
-                print(b)
-            print("------------------只有电脑可用码------------------")
-            for d in codeMac:
-                print(d)
-            print("------------------只有平板可用码------------------")
-            for a in codeIpad:
-                print(a)
-            print("--------------------全部可用码-------------------")
-            for c in codeok:
-                print(c)
-        if tmp == '10':
             checkSchoolStart()
         input("按回车关闭。。。。")
     except Exception as e:
