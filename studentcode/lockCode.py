@@ -1,10 +1,9 @@
 # coding:utf-8
-import sys
-import time
+
+import logging
 
 import requests
 import simplejson as json
-import logging
 from past.builtins import raw_input
 
 logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
@@ -115,7 +114,7 @@ def crearte_auth(id, cookie):
 
 
 def get_record(status="check"):
-    cookies = open("./cookie.ini", "r").readlines()
+    cookies = open("./cookie.ini", "r", encoding="utf-8-sig").readlines()
     for cookie in cookies:
         url = "https://edu-web.jd.com/app/myRecord?applyStatus=PASS&brand=apple"
         payload = {}
@@ -152,13 +151,13 @@ def get_record(status="check"):
 
 def main():
     try:
-        cookies = open("./cookie.ini", "r").readlines()
+        cookies = open("./cookie.ini", "r", encoding="utf-8-sig").readlines()
         if cookies:
             logging.info("获取到的cookie ====> " + str(cookies))
         else:
             logging.error("未获取到cookie！！！！！！请在程序目录创建cookie.ini文件写入cookie即可！！！！")
             input('按回车结束本程序！！！！！！！！')
-        f = open("studentcode", "r").readlines()
+        f = open("studentcode", "r", encoding="utf-8-sig").readlines()
         b = [f[i:i + 5] for i in range(0, len(f), 5)]
 
         # mac
@@ -166,7 +165,7 @@ def main():
         # ipad
         # skuIds = ["100019718259", "100019718261", "100034710052","100019718309","100019718311"]
 
-        f = open("./skuids.ini", "r")
+        f = open("./skuids.ini", "r", encoding="utf-8-sig")
         skuIds = f.readline().split(",")
         print(skuIds)
 

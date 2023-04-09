@@ -1,11 +1,10 @@
 # -*- coding:utf-8 -*-
-import sys
-import time
+
+import logging
+import random
 
 import requests
 import simplejson as json
-import logging
-import random
 
 logging.basicConfig(format='%(asctime)s - %(pathname)s[line:%(lineno)d] - %(levelname)s: %(message)s',
                     level=logging.INFO)
@@ -21,7 +20,7 @@ hotCode = []
 noLockCookie = []
 
 timeout = 10
-auth = open("./auth.ini", "r").readline().strip()
+auth = open("./auth.ini", "r", encoding="utf-8-sig").readline().strip()
 
 
 def deStudentCode(cookie):
@@ -136,9 +135,9 @@ def lock(studentCode, cookie, skuId="100019718287"):
 
 if __name__ == '__main__':
 
-    cookies = open("./cookie.ini", "r").readlines()
+    cookies = open("./cookie.ini", "r", encoding="utf-8-sig").readlines()
 
-    lines = open("studentcode", "r").readlines()
+    lines = open("studentcode", "r", encoding="utf-8-sig").readlines()
     for line, cookie in zip(lines, cookies):
         try:
             # print(line.strip(), cookie.strip())
