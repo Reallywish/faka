@@ -33,20 +33,20 @@ codeIpad = []
 class check:
     def __init__(self, studentCode):
         self.studentCode = studentCode
-        self.auth = open("./auth.ini", "r",encoding='utf-8-sig').readline()
+        self.auth = open("./auth.ini", "r", encoding='utf-8-sig').readline()
 
     def getMaccheck(self, status=0):
-        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        # url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
-        payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028".format(
-            code=self.studentCode)
+        payload = f"company_id=1&xxw_check_code={self.studentCode}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
             'Authorization': self.auth,
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'authorizer-appid': 'wxd2678c430bfd3abc',
             'content-type': 'application/x-www-form-urlencoded',
-            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
+            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html',
         }
         session = requests.Session()
         session.trust_env = False
@@ -64,7 +64,8 @@ class check:
             print(self.studentCode + "   结果：" + str(response))
 
     def getIpadcheck(self, status=0):
-        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        # url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         # payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MM9F3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=899&items%5B0%5D%5Bitem_name%5D=iPad%20Air%EF%BC%88%E7%AC%AC%E4%BA%94%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=899".format(
         #     code=self.studentCode)
@@ -76,14 +77,15 @@ class check:
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'authorizer-appid': 'wxd2678c430bfd3abc',
             'content-type': 'application/x-www-form-urlencoded',
-            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
+            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html',
         }
 
         session = requests.Session()
         session.trust_env = False
         try:
             response = session.request("POST", url, headers=headers, data=payload).json()
-        except:
+        except Exception as e:
+            print(e)
             response = "false"
         if status == 1:
             if "True" in str(response):
@@ -97,16 +99,12 @@ class check:
         else:
             print(self.studentCode + "   结果：" + str(response))
 
-    def getIpadAndMac(self, status='0'):
-        # url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
-        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+    def getIpadAndMac(self):
+        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        # url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
-        if status == '1':
-            payloadIpad = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=2754&edu_param=FY23Q2Q3M4MProgram&items%5B0%5D%5Borigin_bn%5D=MNXD3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1381&items%5B0%5D%5Bitem_name%5D=iPad%20Pro%2011%20%E8%8B%B1%E5%AF%B8%EF%BC%88%E6%96%B0%E6%AC%BE%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1381'
-            payloadMac = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=3539&edu_param=FY23Q2Q3M4MProgram&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20(M2)&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028'
-        else:
-            payloadIpad = f'company_id=1&xxw_check_code={self.studentCode.strip()}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
-            payloadMac = f"company_id=1&xxw_check_code={self.studentCode}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
+        payloadIpad = f'company_id=1&xxw_check_code={self.studentCode.strip()}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
+        payloadMac = f"company_id=1&xxw_check_code={self.studentCode.strip}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
 
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
@@ -114,14 +112,16 @@ class check:
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'authorizer-appid': 'wxd2678c430bfd3abc',
             'content-type': 'application/x-www-form-urlencoded',
-            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html'
+            'Referer': 'https://servicewechat.com/wxd2678c430bfd3abc/69/page-frame.html',
         }
 
         session = requests.Session()
         session.trust_env = False
         try:
-            responseIpad = session.request("POST", url, headers=headers, data=payloadIpad).json()
-            responseMac = session.request("POST", url, headers=headers, data=payloadMac).json()
+            responseIpad = session.post(url, headers=headers, data=payloadIpad.encode('utf-8')).json()
+            # responseIpad = session.request("POST", url, headers=headers, data=payloadIpad).json()
+            # responseMac = session.request("POST", url, headers=headers, data=payloadMac).json()
+            responseMac = session.post(url, headers=headers, data=payloadMac.encode('utf-8')).json()
             # print(responseIpad)
             # print(responseMac)
         except:
@@ -294,7 +294,7 @@ def checkSchoolStart():
         config['pinyi'] = {
             'neek': ''
         }
-        with open('./school.ini', 'w',encoding='utf-8-sig') as cfg:
+        with open('./school.ini', 'w', encoding='utf-8-sig') as cfg:
             config.write(cfg)
         print("配置文件已生成，请填入对应信息，重启该程序")
         # input("回车结束~~~~")
@@ -339,6 +339,23 @@ if __name__ == '__main__':
             print("------------------可用码------------------")
             for a in codeok:
                 print(a)
+        if tmp == '6':
+            for l in tqdm(f.readlines()):
+                code = l.strip()
+                check(code).getIpadAndMac()
+
+            print("------------------全部都不可用码------------------")
+            for b in codeerr:
+                print(b)
+            print("------------------只有电脑可用码------------------")
+            for d in codeMac:
+                print(d)
+            print("------------------只有平板可用码------------------")
+            for a in codeIpad:
+                print(a)
+            print("--------------------全部可用码-------------------")
+            for c in codeok:
+                print(c)
         if tmp == '7':
             checkSchoolStart()
         input("按回车关闭。。。。")
