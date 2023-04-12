@@ -31,15 +31,16 @@ codeIpad = []
 
 
 class check:
-    def __init__(self, studentCode):
-        self.studentCode = studentCode
+    def __init__(self):
+
         self.auth = open("./auth.ini", "r", encoding='utf-8-sig').readline()
+        self.proxy = None
 
-    def getMaccheck(self, status=0):
-        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
-        # url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+    def getMaccheck(self, studentCode, status=0):
+        # url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
-        payload = f"company_id=1&xxw_check_code={self.studentCode}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
+        payload = f"company_id=1&xxw_check_code={studentCode}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
             'Authorization': self.auth,
@@ -51,25 +52,27 @@ class check:
         session = requests.Session()
         session.trust_env = False
         try:
-            response = session.request("POST", url, headers=headers, data=payload).json()
-        except:
-            response = "false"
-        if status == 1:
-            if "True" in str(response):
-                # print(self.studentCode)
-                codeok.append(self.studentCode + "\r")
+            response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,
+                                       timeout=1000).json()
+            if status == 1:
+                if "True" in str(response):
+                    # print(self.studentCode)
+                    codeok.append(studentCode + "\r")
+                else:
+                    codeerr.append(studentCode + "\r")
             else:
-                codeerr.append(self.studentCode + "\r")
-        else:
-            print(self.studentCode + "   结果：" + str(response))
+                print(studentCode + "   结果：" + str(response))
+            return True
+        except:
+            return False
 
-    def getIpadcheck(self, status=0):
-        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
-        # url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+    def getIpadcheck(self, studentCode, status=0):
+        # url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         # payload = "company_id=1&xxw_check_code={code}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MM9F3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=899&items%5B0%5D%5Bitem_name%5D=iPad%20Air%EF%BC%88%E7%AC%AC%E4%BA%94%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=899".format(
         #     code=self.studentCode)
-        payload = f'company_id=1&xxw_check_code={self.studentCode}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
+        payload = f'company_id=1&xxw_check_code={studentCode}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
 
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
@@ -83,28 +86,30 @@ class check:
         session = requests.Session()
         session.trust_env = False
         try:
-            response = session.request("POST", url, headers=headers, data=payload).json()
-        except Exception as e:
-            print(e)
-            response = "false"
-        if status == 1:
-            if "True" in str(response):
-                # print(self.studentCode)
-                codeok.append(self.studentCode + "\r")
+            response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,
+                                       timeout=1000).json()
+            # print(response)
+            if status == 1:
+                if "True" in str(response):
+                    # print(self.studentCode)
+                    codeok.append(studentCode + "\r")
+                else:
+                    codeerr.append(studentCode + "\r")
+            elif status == 2:
+                if "True" not in str(response):
+                    print(studentCode)
             else:
-                codeerr.append(self.studentCode + "\r")
-        elif status == 2:
-            if "True" not in str(response):
-                print(self.studentCode)
-        else:
-            print(self.studentCode + "   结果：" + str(response))
+                print(studentCode + "   结果：" + str(response))
+            return True
+        except Exception as e:
+            return False
 
-    def getIpadAndMac(self):
-        url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
-        # url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
+    def getIpadAndMac(self, studentCode):
+        # url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
+        url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
-        payloadIpad = f'company_id=1&xxw_check_code={self.studentCode.strip()}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
-        payloadMac = f"company_id=1&xxw_check_code={self.studentCode.strip}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
+        payloadIpad = f'company_id=1&xxw_check_code={studentCode.strip()}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
+        payloadMac = f"company_id=1&xxw_check_code={studentCode.strip}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
 
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
@@ -119,23 +124,19 @@ class check:
         session.trust_env = False
         try:
             responseIpad = session.post(url, headers=headers, data=payloadIpad.encode('utf-8')).json()
-            # responseIpad = session.request("POST", url, headers=headers, data=payloadIpad).json()
-            # responseMac = session.request("POST", url, headers=headers, data=payloadMac).json()
             responseMac = session.post(url, headers=headers, data=payloadMac.encode('utf-8')).json()
-            # print(responseIpad)
-            # print(responseMac)
-        except:
-            responseIpad = "false"
-            responseMac = "false"
 
-        if "True" in str(responseIpad) and "True" in str(responseMac):
-            codeok.append(self.studentCode.strip())
-        elif "True" not in str(responseIpad) and "True" in str(responseMac):
-            codeMac.append(self.studentCode.strip())
-        elif "True" in str(responseIpad) and "True" not in str(responseMac):
-            codeIpad.append(self.studentCode.strip())
-        else:
-            codeerr.append(self.studentCode.strip())
+            if "True" in str(responseIpad) and "True" in str(responseMac):
+                codeok.append(studentCode.strip())
+            elif "True" not in str(responseIpad) and "True" in str(responseMac):
+                codeMac.append(studentCode.strip())
+            elif "True" in str(responseIpad) and "True" not in str(responseMac):
+                codeIpad.append(studentCode.strip())
+            else:
+                codeerr.append(studentCode.strip())
+            return True
+        except:
+            return False
 
 
 class Spider():
@@ -243,7 +244,7 @@ def changeProxies(proxy_url):
     return proxies
 
 
-def start(proxy_url):
+def startSchool(proxy_url):
     s = Spider()
     for code in s.df.readlines():
         if len(code.strip()) == 16:
@@ -256,12 +257,12 @@ def start(proxy_url):
 
 
 def checkSchoolStart():
-    configFile = "./school.ini"
+    configFile = "./proxy.ini"
     config = configparser.ConfigParser()
 
     if os.path.exists(configFile):
         status = raw_input(
-            "使用品易代理请输入1，使用小象代理请输入2，请确保配置文件已添加相关配置！！！======>>")
+            "使用品易代理请输入1，使用小象代理请输入2，直接回车不使用代理。请确保配置文件已添加相关配置！！！======>>")
         config.read(configFile)
 
         """熊猫代理参数"""
@@ -273,14 +274,14 @@ def checkSchoolStart():
             """品易代理参数"""
             neek = config.get("pinyi", "neek")
             proxy_url = f'http://tiqu.pyhttp.taolop.com/getflowip?count=1&neek={neek}&type=2&sep=4&sb=&ip_si=1&mr=0'
-            start(proxy_url)
+            startSchool(proxy_url)
             input("执行完毕，请按回车结束···")
         elif status == "2":
             """小象代理参数"""
             appKey = config.get("elephant", "appkey")
             appSecret = config.get("elephant", "appSecret")
             proxy_url = f'https://api.xiaoxiangdaili.com/ip/get?appKey={appKey}&appSecret={appSecret}&cnt=&wt=json'
-            start(proxy_url)
+            startSchool(proxy_url)
             input("执行完毕，请按回车结束···")
         else:
             input("请按要求输入！！！")
@@ -294,7 +295,7 @@ def checkSchoolStart():
         config['pinyi'] = {
             'neek': ''
         }
-        with open('./school.ini', 'w', encoding='utf-8-sig') as cfg:
+        with open('./proxy.ini', 'w', encoding='utf-8-sig') as cfg:
             config.write(cfg)
         print("配置文件已生成，请填入对应信息，重启该程序")
         # input("回车结束~~~~")
@@ -308,57 +309,108 @@ if __name__ == '__main__':
 检测mac结果直接输出请输入2
 输入3将IPAD总结输出
 输入4将MAC总结输出
-输入5检测Mac和Ipad，结果输出到控制台
 输入6检测Mac和Ipad，只将结果输出到控制
 输入7将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
 请按要求输入：=======>""")
 
         f = open("studentcode", "r", encoding='utf-8')
-        if tmp == "1" or tmp == "2" or tmp == "5":
-            for l in f.readlines():
-                code = l.strip()
-                if tmp == "1":
-                    check(code).getIpadcheck()
-                elif tmp == "2":
-                    check(code).getMaccheck()
-                else:
-                    print("+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
-                    check(code).getIpadcheck()
-                    check(code).getMaccheck()
+        configFile = "./proxy.ini"
+        config = configparser.ConfigParser()
+        if os.path.exists(configFile):
+            proxy_tmp = raw_input(
+                "使用品易代理请输入1，使用小象代理请输入2，请确保配置文件已添加相关配置！！！======>>")
+            config.read(configFile)
 
-        if tmp == "3" or tmp == "4":
-            for l in tqdm(f.readlines()):
-                code = l.strip()
-                if tmp == "3":
-                    check(code).getIpadcheck(1)
-                elif tmp == "4":
-                    check(code).getMaccheck(1)
-            print("------------------不可用码------------------")
-            for b in codeerr:
-                print(b)
-            print("------------------可用码------------------")
-            for a in codeok:
-                print(a)
-        if tmp == '6':
-            for l in tqdm(f.readlines()):
-                code = l.strip()
-                check(code).getIpadAndMac()
+            c = check()
+            if proxy_tmp == "1":
+                neek = config.get("pinyi", "neek")
+                proxy_url = f'http://tiqu.pyhttp.taolop.com/getflowip?count=1&neek={neek}&type=2&sep=4&sb=&ip_si=1&mr=0'
+            elif proxy_tmp == "2":
+                appKey = config.get("elephant", "appkey")
+                appSecret = config.get("elephant", "appSecret")
+                proxy_url = f'https://api.xiaoxiangdaili.com/ip/get?appKey={appKey}&appSecret={appSecret}&cnt=&wt=json'
+            else:
+                proxy_url = ""
+            if tmp == "1" or tmp == "2" or tmp == "5":
 
-            print("------------------全部都不可用码------------------")
-            for b in codeerr:
-                print(b)
-            print("------------------只有电脑可用码------------------")
-            for d in codeMac:
-                print(d)
-            print("------------------只有平板可用码------------------")
-            for a in codeIpad:
-                print(a)
-            print("--------------------全部可用码-------------------")
-            for c in codeok:
-                print(c)
-        if tmp == '7':
-            checkSchoolStart()
-        input("按回车关闭。。。。")
+                for l in f.readlines():
+                    code = l.strip()
+
+                    if len(code) == 16:
+                        if tmp == "1":
+                            if proxy_url == None:
+                                c.getIpadcheck(code)
+                            else:
+                                while not c.getIpadcheck(code):
+                                    time.sleep(1)
+                                    c.proxy = changeProxies(proxy_url)
+                        elif tmp == "2":
+                            # c.getMaccheck(code)
+                            if proxy_url == None:
+                                c.getMaccheck(code)
+                            else:
+                                while not c.getMaccheck(code):
+                                    time.sleep(1)
+                                    c.proxy = changeProxies(proxy_url)
+
+            if tmp == "3" or tmp == "4":
+                c = check()
+                for l in tqdm(f.readlines()):
+                    code = l.strip()
+                    if tmp == "3":
+                        if proxy_url == None:
+                            c.getIpadcheck(code)
+                        else:
+                            while not c.getIpadcheck(code, 1):
+                                time.sleep(1)
+                                c.proxy = changeProxies(proxy_url)
+                    elif tmp == "4":
+                        if proxy_url == None:
+                            c.getMaccheck(code)
+                        else:
+                            while not c.getMaccheck(code, 1):
+                                time.sleep(1)
+                                c.proxy = changeProxies(proxy_url)
+                print("------------------不可用码------------------")
+                for b in codeerr:
+                    print(b)
+                print("------------------可用码------------------")
+                for a in codeok:
+                    print(a)
+            if tmp == '6':
+                c = check()
+                for l in tqdm(f.readlines()):
+                    code = l.strip()
+                    c.getIpadAndMac(code)
+
+                print("------------------全部都不可用码------------------")
+                for b in codeerr:
+                    print(b)
+                print("------------------只有电脑可用码------------------")
+                for d in codeMac:
+                    print(d)
+                print("------------------只有平板可用码------------------")
+                for a in codeIpad:
+                    print(a)
+                print("--------------------全部可用码-------------------")
+                for c in codeok:
+                    print(c)
+            if tmp == '7':
+                checkSchoolStart()
+            input("按回车关闭。。。。")
+        else:
+            config['elephant'] = {
+                'appKey': '',
+                'appSecret': ''
+            }
+            config['pinyi'] = {
+                'neek': ''
+            }
+            with open('./proxy.ini', 'w') as cfg:
+                config.write(cfg)
+            print("配置文件已生成，请填入对应信息，重启该程序")
+            input("回车结束~~~~")
+
     except Exception as e:
         print(e)
         input("按回车键关闭。。。")
