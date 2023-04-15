@@ -53,7 +53,7 @@ class check:
         session.trust_env = False
         try:
             response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,
-                                       timeout=1000).json()
+                                       timeout=10).json()
             if status == 1:
                 if "True" in str(response):
                     # print(self.studentCode)
@@ -87,7 +87,7 @@ class check:
         session.trust_env = False
         try:
             response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,
-                                       timeout=1000).json()
+                                       timeout=10).json()
             # print(response)
             if status == 1:
                 if "True" in str(response):
@@ -102,6 +102,7 @@ class check:
                 print(studentCode + "   结果：" + str(response))
             return True
         except Exception as e:
+            print(e)
             return False
 
     def getIpadAndMac(self, studentCode):
@@ -330,7 +331,7 @@ if __name__ == '__main__':
                 appSecret = config.get("elephant", "appSecret")
                 proxy_url = f'https://api.xiaoxiangdaili.com/ip/get?appKey={appKey}&appSecret={appSecret}&cnt=&wt=json'
             else:
-                proxy_url = ""
+                proxy_url = "http://172.16.1.64:5555/random"
             if tmp == "1" or tmp == "2" or tmp == "5":
 
                 for l in f.readlines():
