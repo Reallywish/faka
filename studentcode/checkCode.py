@@ -257,13 +257,11 @@ def startSchool(proxy_url):
     os.remove('tmp.csv')
 
 
-def checkSchoolStart():
+def checkSchoolStart(proxy_url):
     configFile = "./proxy.ini"
     config = configparser.ConfigParser()
 
     if os.path.exists(configFile):
-        status = raw_input(
-            "使用品易代理请输入1，使用小象代理请输入2，直接回车不使用代理。请确保配置文件已添加相关配置！！！======>>")
         config.read(configFile)
 
         """熊猫代理参数"""
@@ -271,21 +269,9 @@ def checkSchoolStart():
         # orderNo = 'GL20191206115727PPFPSsMm'
         # proxy_url = f'http://route.xiongmaodaili.com/xiongmao-web/api/glip?secret={secret}&orderNo={orderNo}&count=1&isTxt=0&proxyType=1'
 
-        if status == "1":
-            """品易代理参数"""
-            neek = config.get("pinyi", "neek")
-            proxy_url = f'http://tiqu.pyhttp.taolop.com/getflowip?count=1&neek={neek}&type=2&sep=4&sb=&ip_si=1&mr=0'
-            startSchool(proxy_url)
-            input("执行完毕，请按回车结束···")
-        elif status == "2":
-            """小象代理参数"""
-            appKey = config.get("elephant", "appkey")
-            appSecret = config.get("elephant", "appSecret")
-            proxy_url = f'https://api.xiaoxiangdaili.com/ip/get?appKey={appKey}&appSecret={appSecret}&cnt=&wt=json'
-            startSchool(proxy_url)
-            input("执行完毕，请按回车结束···")
-        else:
-            input("请按要求输入！！！")
+        startSchool(proxy_url)
+        input("执行完毕，请按回车结束···")
+
 
 
     else:
@@ -397,7 +383,7 @@ if __name__ == '__main__':
                 for c in codeok:
                     print(c)
             if tmp == '7':
-                checkSchoolStart()
+                checkSchoolStart(proxy_url)
             input("按回车关闭。。。。")
         else:
             config['elephant'] = {
