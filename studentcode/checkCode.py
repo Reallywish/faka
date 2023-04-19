@@ -43,7 +43,7 @@ class check:
         payload = f"company_id=1&xxw_check_code={studentCode}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
-            'Authorization': self.auth,
+            'Authorization': self.auth.strip(),
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'authorizer-appid': 'wxd2678c430bfd3abc',
             'content-type': 'application/x-www-form-urlencoded',
@@ -52,7 +52,7 @@ class check:
         session = requests.Session()
         session.trust_env = False
         try:
-            response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,
+            response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,verify=False,
                                        timeout=10).json()
             if status == 1:
                 if "True" in str(response):
@@ -76,7 +76,7 @@ class check:
 
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
-            'Authorization': self.auth,
+            'Authorization': self.auth.strip(),
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'authorizer-appid': 'wxd2678c430bfd3abc',
             'content-type': 'application/x-www-form-urlencoded',
@@ -102,19 +102,30 @@ class check:
                 print(studentCode + "   结果：" + str(response))
             return True
         except Exception as e:
-            print(e)
+            # print(e)
             return False
+
+
+class checkall:
+
+    def __init__(self):
+        self.auth = open("./auth.ini", "r", encoding='utf-8-sig').readline()
+        self.proxy = None
+        f = open('code_check.csv', 'w', newline='', encoding='utf-8-sig')
+        c = csv.writer(f)
+        c.writerow(['验证码', '平板', '电脑'])
+        f.close()
 
     def getIpadAndMac(self, studentCode):
         # url = "https://aar-orderapi.tjtjshengtu.com/api/h5app/wxapp/order/xxwCheck"
         url = "https://aar-orderapi.tjtjshengtu.com/hyv80api/h5app/wxapp/order/xxwCheck"
 
         payloadIpad = f'company_id=1&xxw_check_code={studentCode.strip()}&distributor_id=3539&edu_param=&items%5B0%5D%5Borigin_bn%5D=MK2K3CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=582&items%5B0%5D%5Bitem_name%5D=iPad%EF%BC%88%E7%AC%AC%E4%B9%9D%E4%BB%A3%EF%BC%89&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=582'
-        payloadMac = f"company_id=1&xxw_check_code={studentCode.strip}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
+        payloadMac = f"company_id=1&xxw_check_code={studentCode.strip()}&distributor_id=3655&edu_param=&items%5B0%5D%5Borigin_bn%5D=MLY33CH%2FA&items%5B0%5D%5Bitem_num%5D=1&items%5B0%5D%5Bgoods_id%5D=1028&items%5B0%5D%5Bitem_name%5D=MacBook%20Air%20%28M2%29&items%5B0%5D%5Bis_edu%5D=1&items%5B0%5D%5Bitem_id%5D=1028"
 
         headers = {
             'Host': 'aar-orderapi.tjtjshengtu.com',
-            'Authorization': self.auth,
+            'Authorization': self.auth.strip(),
             'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/53.0.2785.143 Safari/537.36 MicroMessenger/7.0.9.501 NetType/WIFI MiniProgramEnv/Windows WindowsWechat',
             'authorizer-appid': 'wxd2678c430bfd3abc',
             'content-type': 'application/x-www-form-urlencoded',
@@ -124,20 +135,37 @@ class check:
         session = requests.Session()
         session.trust_env = False
         try:
-            responseIpad = session.post(url, headers=headers, data=payloadIpad.encode('utf-8')).json()
-            responseMac = session.post(url, headers=headers, data=payloadMac.encode('utf-8')).json()
+            responseIpad = session.post(url, headers=headers, proxies=self.proxy, timeout=10,
+                                        data=payloadIpad.encode('utf-8')).text
+            # print(studentCode + "=====>" + responseIpad)
+            responseMac = session.post(url, headers=headers, proxies=self.proxy, timeout=10,
+                                       data=payloadMac.encode('utf-8')).text
+            # print(studentCode + "=====>" + responseMac)
 
-            if "True" in str(responseIpad) and "True" in str(responseMac):
-                codeok.append(studentCode.strip())
-            elif "True" not in str(responseIpad) and "True" in str(responseMac):
-                codeMac.append(studentCode.strip())
-            elif "True" in str(responseIpad) and "True" not in str(responseMac):
-                codeIpad.append(studentCode.strip())
+            if "true" in str(responseIpad).lower() and "true" in str(responseMac).lower():
+                self.saveData([studentCode, "通过", "通过"])
+            elif "true" not in str(responseIpad).lower() and "true" in str(responseMac).lower():
+                self.saveData([studentCode, "不通过", "通过"])
+            elif "true" in str(responseIpad).lower() and "true" not in str(responseMac).lower():
+                self.saveData([studentCode, "通过", "不通过"])
+            elif "很抱歉，由于您访问的URL有可能对网站造成安全威胁，您的访问被阻断。" in str(
+                    responseIpad) or "很抱歉，由于您访问的URL有可能对网站造成安全威胁，您的访问被阻断。" in str(responseMac):
+                return False
             else:
-                codeerr.append(studentCode.strip())
+                self.saveData([studentCode, "不通过", "不通过"])
             return True
         except:
             return False
+
+    def saveData(self, data):
+        """
+        数据存储
+        """
+        f = open('code_check.csv', 'a', newline='', encoding='utf-8-sig')
+        c = csv.writer(f)
+        print(" ".join(data))
+        c.writerow(data)
+        f.close()
 
 
 class Spider():
@@ -237,11 +265,16 @@ def changeProxies(proxy_url):
             except:
                 print("获取代理ip循环内出错~！！！")
                 continue
-    while (json.loads(ret.text)['code'] != 200 and json.loads(ret.text)['code'] != 0):
-        time.sleep(1)
-        return changeProxies(proxy_url)
-    data = json.loads(ret.text)['data'][0]
-    proxies = {"https": f"{data['ip']}:{data['port']}"}
+
+    try:
+        while (json.loads(ret.text)['code'] != 200 and json.loads(ret.text)['code'] != 0):
+            time.sleep(1)
+            return changeProxies(proxy_url)
+        data = json.loads(ret.text)['data'][0]
+        proxies = {"https": f"{data['ip']}:{data['port']}"}
+    except:
+        data = ret.text.split(":")
+        proxies = {"https": f"{data[0]}:{data[1]}"}
     return proxies
 
 
@@ -365,23 +398,14 @@ if __name__ == '__main__':
                 for a in codeok:
                     print(a)
             if tmp == '6':
-                c = check()
+                c = checkall()
                 for l in tqdm(f.readlines()):
                     code = l.strip()
-                    c.getIpadAndMac(code)
 
-                print("------------------全部都不可用码------------------")
-                for b in codeerr:
-                    print(b)
-                print("------------------只有电脑可用码------------------")
-                for d in codeMac:
-                    print(d)
-                print("------------------只有平板可用码------------------")
-                for a in codeIpad:
-                    print(a)
-                print("--------------------全部可用码-------------------")
-                for c in codeok:
-                    print(c)
+                    while not c.getIpadAndMac(code):
+                        # time.sleep(1)
+                        c.proxy = changeProxies(proxy_url)
+
             if tmp == '7':
                 checkSchoolStart(proxy_url)
             input("按回车关闭。。。。")
