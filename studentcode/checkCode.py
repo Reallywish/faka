@@ -1,13 +1,12 @@
 # coding:utf-8
+import re
 
-import requests
 from tqdm import tqdm
 from past.builtins import raw_input
 import os
 
 import configparser
 import requests
-import json
 import time
 from bs4 import BeautifulSoup
 import pandas
@@ -52,7 +51,7 @@ class check:
         session = requests.Session()
         session.trust_env = False
         try:
-            response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload,verify=False,
+            response = session.request("POST", url, headers=headers, proxies=self.proxy, data=payload, verify=False,
                                        timeout=10).json()
             if status == 1:
                 if "True" in str(response):
@@ -253,8 +252,13 @@ def changeProxies(proxy_url):
     :return:
     """
     try:
-        ret = requests.get(proxy_url)
-        print('代理接口返回的ip====>>>>>:', ret.text)
+        ret = requests.get(proxy_url).json()
+        print('代理接口返回的ip====>>>>>:', ret)
+        if "白名单" in str(ret):
+            ip_pattern = r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}'
+            ip = re.search(ip_pattern, ret['msg']).group(0)
+            print("加入白名单ing。。。。" + ip)
+            addwhite(ip)
     except:
         print("获取代理ip出错··")
         while True:
@@ -267,15 +271,40 @@ def changeProxies(proxy_url):
                 continue
 
     try:
-        while (json.loads(ret.text)['code'] != 200 and json.loads(ret.text)['code'] != 0):
-            time.sleep(1)
+        while (ret['code'] != 200 and ret['code'] != 0):
+            time.sleep(5)
             return changeProxies(proxy_url)
-        data = json.loads(ret.text)['data'][0]
+        data = ret['data'][0]
         proxies = {"https": f"{data['ip']}:{data['port']}"}
     except:
-        data = ret.text.split(":")
+        data = ret.split(":")
         proxies = {"https": f"{data[0]}:{data[1]}"}
     return proxies
+
+
+def get_public_ip():
+    url = "https://api.ipify.org"
+    try:
+        response = requests.get(url)
+        ip_address = response.text.strip()
+        return ip_address
+    except requests.RequestException as e:
+        print("Error: ", e)
+        return None
+
+
+def addwhite(public_ip):
+    """
+    增加品易白名单
+    :param public_ip:
+    :return:
+    """
+    appkey = config.get("pinyi", "appkey")
+    # 获取本机公网ip
+    # public_ip = get_public_ip()
+    url = f"https://pycn.yapi.3866866.com/index/index/save_white?neek={neek}&appkey={appkey}&white={public_ip}"
+    response = requests.get(url).text
+    print(response)
 
 
 def startSchool(proxy_url):
@@ -415,6 +444,7 @@ if __name__ == '__main__':
                 'appSecret': ''
             }
             config['pinyi'] = {
+                'appkey': '',
                 'neek': ''
             }
             with open('./proxy.ini', 'w') as cfg:
