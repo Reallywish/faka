@@ -1,5 +1,6 @@
 # coding:utf-8
 import re
+import sys
 
 from tqdm import tqdm
 from past.builtins import raw_input
@@ -253,21 +254,21 @@ def changeProxies(proxy_url):
     """
     try:
         ret = requests.get(proxy_url).json()
-        print('代理接口返回的ip====>>>>>:', ret)
+        tqdm.write('代理接口返回的ip====>>>>>:' + str(ret))
         if "白名单" in str(ret):
             ip_pattern = r'((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})(\.((2(5[0-5]|[0-4]\d))|[0-1]?\d{1,2})){3}'
             ip = re.search(ip_pattern, ret['msg']).group(0)
-            print("加入白名单ing。。。。" + ip)
+            tqdm.write("加入白名单ing。。。。" + ip)
             addwhite(ip)
     except:
-        print("获取代理ip出错··")
+        tqdm.write("获取代理ip出错··")
         while True:
             try:
                 ret = requests.get(proxy_url)
-                print(ret)
+                tqdm.write(ret)
                 break
             except:
-                print("获取代理ip循环内出错~！！！")
+                tqdm.write("获取代理ip循环内出错~！！！")
                 continue
 
     try:
@@ -304,7 +305,7 @@ def addwhite(public_ip):
     # public_ip = get_public_ip()
     url = f"https://pycn.yapi.3866866.com/index/index/save_white?neek={neek}&appkey={appkey}&white={public_ip}"
     response = requests.get(url).text
-    print(response)
+    tqdm.write(response)
 
 
 def startSchool(proxy_url):
@@ -404,7 +405,7 @@ if __name__ == '__main__':
 
             if tmp == "3" or tmp == "4":
                 c = check()
-                for l in tqdm(f.readlines()):
+                for l in tqdm(f.readlines(), position=0, file=sys.stdout, desc="进度"):
                     code = l.strip()
                     if tmp == "3":
                         if proxy_url == None:
@@ -428,7 +429,7 @@ if __name__ == '__main__':
                     print(a)
             if tmp == '6':
                 c = checkall()
-                for l in tqdm(f.readlines()):
+                for l in tqdm(f.readlines(), position=0, file=sys.stdout, desc="进度"):
                     code = l.strip()
 
                     while not c.getIpadAndMac(code):
