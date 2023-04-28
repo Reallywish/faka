@@ -100,43 +100,46 @@ def proxy_add(my_list, neek, appkey):
 
 if __name__ == '__main__':
 
-    tmp = raw_input(
-        """检测ipad结果直接输出请输入1
+    try:
+        tmp = raw_input(
+            """检测ipad结果直接输出请输入1
 检测mac结果直接输出请输入2
 请按要求输入：=======>""")
-    configFile = "./proxy.ini"
-    config = configparser.ConfigParser()
-    config.read(configFile)
-    neek = config.get("pinyi", "neek")
-    appkey = config.get("pinyi", "appkey")
+        configFile = "./proxy.ini"
+        config = configparser.ConfigParser()
+        config.read(configFile)
+        neek = config.get("pinyi", "neek")
+        appkey = config.get("pinyi", "appkey")
 
-    # 定义了进程中共享使用的几个数组。
-    manager = Manager()
-    my_list = manager.list()
-    codeOk = manager.list()
-    codeErr = manager.list()
+        # 定义了进程中共享使用的几个数组。
+        manager = Manager()
+        my_list = manager.list()
+        codeOk = manager.list()
+        codeErr = manager.list()
 
-    changeProxies(neek, appkey, my_list)
-    # print(my_list)
-    p = Pool(int(config.get("pool", "count")))
-    auth = open("./auth.ini", "r", encoding='utf-8-sig').readline().strip()
-    f = open("studentcode", "r", encoding='utf-8').readlines()
-    pbar = tqdm(total=len(f), position=0, file=sys.stdout, desc="进度")
-    update = lambda *args: pbar.update()
-    proxymulti = multiprocessing.Process(target=proxy_add, args=(my_list, neek, appkey))
-    proxymulti.start()
-    for line in f:
-        if tmp == "1":
-            p.apply_async(getIpadcheck, args=(line.strip(), auth, "1", my_list, codeOk, codeErr), callback=update)
-        elif tmp == "2":
-            p.apply_async(getIpadcheck, args=(line.strip(), auth, "2", my_list, codeOk, codeErr), callback=update)
+        changeProxies(neek, appkey, my_list)
+        # print(my_list)
+        p = Pool(int(config.get("pool", "count")))
+        auth = open("./auth.ini", "r", encoding='utf-8-sig').readline().strip()
+        f = open("studentcode", "r", encoding='utf-8').readlines()
+        pbar = tqdm(total=len(f), position=0, file=sys.stdout, desc="进度")
+        update = lambda *args: pbar.update()
+        proxymulti = multiprocessing.Process(target=proxy_add, args=(my_list, neek, appkey))
+        proxymulti.start()
+        for line in f:
+            if tmp == "1":
+                p.apply_async(getIpadcheck, args=(line.strip(), auth, "1", my_list, codeOk, codeErr), callback=update)
+            elif tmp == "2":
+                p.apply_async(getIpadcheck, args=(line.strip(), auth, "2", my_list, codeOk, codeErr), callback=update)
 
-    p.close()
-    p.join()
+        p.close()
+        p.join()
 
-    pbar.write("-----------------------------不可用码----------------------------------")
-    for a in codeErr: pbar.write(a)
-    pbar.write("-----------------------------可用码----------------------------------")
-    for a in codeOk: pbar.write(a)
+        pbar.write("-----------------------------不可用码----------------------------------")
+        for a in codeErr: pbar.write(a)
+        pbar.write("-----------------------------可用码----------------------------------")
+        for a in codeOk: pbar.write(a)
 
-    proxymulti.join()
+        proxymulti.join()
+    except:
+        input("程序出错·········")
