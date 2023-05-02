@@ -99,7 +99,7 @@ def proxy_add(my_list, neek, appkey):
 
 
 if __name__ == '__main__':
-
+    multiprocessing.freeze_support()
     try:
         tmp = raw_input(
             """检测ipad结果直接输出请输入1
