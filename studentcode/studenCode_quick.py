@@ -74,6 +74,7 @@ def changeProxies(neek, appkey, mylist, count=200):
             ip = re.search(ip_pattern, ret['msg']).group(0)
             print("加入白名单ing。。。。" + ip)
             addwhite(ip, appkey)
+            ret = requests.get(proxyurl).json()
     except Exception as e:
         while True:
             try:
