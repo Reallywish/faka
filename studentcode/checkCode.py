@@ -197,7 +197,10 @@ class Spider():
         except Exception as err:
             print(err)
             return True
-        if '继续' in ret.text:
+        if '系统检测到非法访问，不合要求的在线验证码！' in ret.text:
+            self.saveData([code, '', '', '', '', '不合要求的码'])
+            return False
+        if '继续' in ret.text and '系统检测到非法访问，不合要求的在线验证码！' not in ret.text:
             return True
         if '在线验证报告已过期，无法在线验证。' in ret.text:
             self.saveData([code, '', '', '', '', '闭码'])
