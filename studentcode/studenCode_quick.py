@@ -110,7 +110,7 @@ if __name__ == '__main__':
 请按要求输入：=======>""")
         configFile = "./proxy.ini"
         config = configparser.ConfigParser()
-        config.read(configFile)
+        config.read(configFile,encoding="utf-8-sig")
         neek = config.get("pinyi", "neek")
         appkey = config.get("pinyi", "appkey")
 
