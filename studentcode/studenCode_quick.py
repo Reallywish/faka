@@ -1,10 +1,12 @@
+# -*- coding:utf-8 -*-
+import configparser
 import multiprocessing
 import re
 import sys
+import time
 from multiprocessing import Pool, Manager
-import requests, time
-import configparser
 
+import requests
 from past.builtins import raw_input
 from tqdm import tqdm
 
@@ -17,7 +19,7 @@ def addwhite(public_ip, appkey):
     """
     # 获取本机公网ip
     # public_ip = get_public_ip()
-    url = f"https://pycn.yapi.3866866.com/index/index/save_white?neek={neek}&appkey={appkey}&white={public_ip}"
+    url = f"https://pycn.yapi.py.cn/index/index/save_white?neek={neek}&appkey={appkey}&white={public_ip}"
     response = requests.get(url).text
     print(response)
 
@@ -142,5 +144,6 @@ if __name__ == '__main__':
         for a in codeOk: pbar.write(a)
 
         proxymulti.join()
-    except:
+    except Exception as e:
+        print(e)
         input("程序出错·········")
