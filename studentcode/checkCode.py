@@ -328,7 +328,7 @@ def checkSchoolStart(proxy_url):
     config = configparser.ConfigParser()
 
     if os.path.exists(configFile):
-        config.read(configFile)
+        config.read(configFile,encoding='utf-8-sig')
 
         """熊猫代理参数"""
         # secret = '0a669c9ff901cb72d4ad4e3438f1b036'
@@ -366,13 +366,13 @@ if __name__ == '__main__':
 输入7将码学生信息解析（注意需要代理）,执行完毕会在本地生成一个result.xlsx
 请按要求输入：=======>""")
 
-        f = open("studentcode", "r", encoding='utf-8')
+        f = open("studentcode", "r", encoding='utf-8-sig')
         configFile = "./proxy.ini"
         config = configparser.ConfigParser()
         if os.path.exists(configFile):
             proxy_tmp = raw_input(
                 "使用品易代理请输入1，使用小象代理请输入2，请确保配置文件已添加相关配置！！！======>>")
-            config.read(configFile)
+            config.read(configFile,encoding="utf-8-sig")
 
             c = check()
             if proxy_tmp == "1":
