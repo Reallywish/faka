@@ -15,6 +15,8 @@ import urllib3
 
 urllib3.disable_warnings()
 
+errArr = []
+
 
 def ttotp(key):
     key = base64.b32decode(key.upper() + '=' * ((8 - len(key)) % 8))
@@ -179,6 +181,7 @@ def appjmp(wskey, tokenKey):  # 方法 传递 wskey & tokenKey
         else:  # 判断分支
             if 'fake' in pt_key:  # 判断 pt_key中 是否存在fake
                 print(str(wskey) + ";WsKey状态失效\n")  # 标准日志输出
+                errArr.append(wskey)
                 return False, wskey  # 返回 -> False[Bool], Wskey
             else:  # 判断分支
                 print(str(wskey) + ";WsKey状态正常\n")  # 标准日志输出
@@ -246,5 +249,10 @@ if __name__ == '__main__':  # Python主函数执行入口
             print(return_ws)
             if return_ws[0]:
                 cookieFileStream.write(str(return_ws[1]) + "\n")
+
+        print("------------------------------不可用-------------------------------")
+        for e in errArr:
+            print(e)
+        input("回车退出············")
     except:
         input("按回车退出···········")

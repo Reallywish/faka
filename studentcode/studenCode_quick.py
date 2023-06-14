@@ -9,7 +9,8 @@ from multiprocessing import Pool, Manager
 import requests
 from past.builtins import raw_input
 from tqdm import tqdm
-
+import colorama
+colorama.init()
 
 def addwhite(public_ip, appkey):
     """
