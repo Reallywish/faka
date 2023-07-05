@@ -102,7 +102,7 @@ class check:
                 print(studentCode + "   结果：" + str(response))
             return True
         except Exception as e:
-            # print(e)
+            print(e)
             return False
 
 

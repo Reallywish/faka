@@ -20,8 +20,7 @@ mt_r = 'clips_OlU6TmFRag5rCXwbNAQ/Tz1SKlN8THcecBp/'
 # res_map = {'10213': '贵州茅台酒（癸卯兔年）', '2476': '贵州茅台酒（壬寅虎年）', '2478': '贵州茅台酒（珍品）',
 # '10214': '贵州茅台酒（癸卯兔年）x2'}
 # 下面定义的是申请哪几个，想申请全部的话把上面注释删掉，把下面的注释掉
-res_map = {'10213': '贵州茅台酒（癸卯兔年）', '2478': '贵州茅台酒（珍品）',
-           '10214': '贵州茅台酒（癸卯兔年）x2'}
+res_map = {'10213': '贵州茅台酒（癸卯兔年）', '10214': '贵州茅台酒（癸卯兔年）x2'}
 
 
 def mt_add(itemId, shopId, sessionId, userId, token, Device_ID):
@@ -103,11 +102,12 @@ def get_shop_item(sessionId, itemId, device_id, token, province, city):
         'mt-lng': lng,
         'mt-lat': lat
     }
-
-    response = requests.get(
-        'https://static.moutai519.com.cn/mt-backend/xhr/front/mall/shop/list/slim/v3/' + str(
-            sessionId) + '/' + province + '/' + str(itemId) + '/' + time_keys,
-        headers=headers)
+    url = 'https://static.moutai519.com.cn/mt-backend/xhr/front/mall/shop/list/slim/v3/' + str(
+        sessionId) + '/' + province + '/' + str(itemId) + '/' + time_keys
+    response = requests.get(url, headers=headers)
+    print(url)
+    print(headers)
+    print(response.text)
     data = response.json().get('data', {})
     shops = data.get('shops', [])
     shop_id_ = p_c_map[province][city]
@@ -274,6 +274,7 @@ if __name__ == '__main__':
                 ',')
             time_keys = str(
                 int(time.mktime(datetime.date.today().timetuple())) * 1000)
+            print(time_keys)
             get_map()
 
             try:
